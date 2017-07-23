@@ -259,7 +259,9 @@ simutrans_reload () {
 
   # Copying savegames
   echo "Copying savegames..." | log INFO
-  mkdir build/r$revision/simutrans/save/ | log DEBUG
+  if [[ ! -d $install_dir/save ]]; then
+    mkdir $install_dir/save
+  fi
   cp -fv $instance_dir/save/*.sve $install_dir/save/ | log DEBUG
 
   simutrans_start

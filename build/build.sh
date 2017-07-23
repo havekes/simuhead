@@ -28,7 +28,9 @@ cd ..
 
 # Copy the game files
 echo "Copying game files..."
-mkdir r$REVISION
+if [[ ! -d $install_dir ]]
+  mkdir $install_dir
+fi
 cp -rf trunk/simutrans/ $install_dir
 cp -f trunk/build/default/sim $install_dir/simutrans/
 
