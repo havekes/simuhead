@@ -5,7 +5,13 @@ CORES=$(getconf _NPROCESSORS_ONLN)
 
 INSTANCE=$1
 REVISION=$2
-install_dir=../servers/$INSTANCE/r$REVISION
+
+# Get the script path somewhat reliably (https://stackoverflow.com/a/4774063)
+pushd `dirname $0` > /dev/null
+SCRIPTPATH=`pwd`
+popd > /dev/null
+
+install_dir=$SCRIPTPATH/../servers/$INSTANCE/r$REVISION
 
 if [[ $REVISION -ne $(cat last_build.revision) ]]; then
   # Download revision and clean
@@ -28,6 +34,9 @@ if [[ $REVISION -ne $(cat last_build.revision) ]]; then
 
   # Exiting trunk/
   cd ..
+
+  # Save last revision
+  echo $REVISION > last_build.revision
 fi
 
 # Copy the game files
@@ -43,9 +52,5 @@ echo "Running get_lang_files.sh..."
 cp trunk/get_lang_files.sh $install_dir/simutrans/text/
 cd $install_dir/simutrans/text/
 ./get_lang_files.sh
-cd ../../../
-
-# Save last revision
-echo $REVISION > last_build.revision
 
 echo "Done installing r$REVISION!"
