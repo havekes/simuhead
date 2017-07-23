@@ -24,17 +24,14 @@ log() {
 
     case $level in
       ERROR)
-        echo "$level: $data"
-        ;;
-      WARN)
-        echo "$level: $data"
+        echo "$PREFIX | ERROR: $data"
         ;;
       INFO)
-        echo "$level: $data"
+        echo "$PREFIX | $data"
         ;;
       DEBUG)
         if [[ $VERBOSE -eq "true" ]]; then
-          echo "$level: $data"
+          echo "$PREFIX | DEBUG: $data"
         fi
         ;;
       *)
@@ -57,7 +54,7 @@ LONG=verbose:
 # Check if enhanced getopt is available
 getopt --test > /dev/null
 if [[ $? -ne 4 ]]; then
-  echo "Enhanced getopt is not available in this environment"
+  echo "ERROR: Enhanced getopt is not available in this environment"
   exit 1
 fi
 
@@ -95,7 +92,7 @@ if [[ $# -eq 2 ]]; then
   action=$1
   instance=$2
 else
-  echo -e "Not enough parmaters."
+  echo -e "ERROR: Not enough parmaters."
   usage
   exit 1
 fi
@@ -112,11 +109,8 @@ if [[ ! -d $log_dir ]]; then
 fi
 LOG_FILE=$log_dir/simctl.log
 
-# Installs
-simutrans_dir=$SCRIPTPATH/servers/$instance/r$revision/simutrans
-
-# PID files
-pidfile=$SCRIPTPATH/run/$instance.pid
+# Stdout prefix
+PREFIX="Simutrans server instance: $instance"
 
 
 # Check instance config
@@ -156,8 +150,15 @@ if [[ -z ${debug:+x} ]]; then
 fi
 
 
+# Installs
+simutrans_dir=$SCRIPTPATH/servers/$instance/r$revision/simutrans
+
+# PID files
+pidfile=$SCRIPTPATH/run/$instance.pid
+
+
 # Backup savegames
-backup_savegames () {
+backup_savegames () 
   if [[ -e $simutrans_dir/server$port-restore.sve ]]; then
     backup_number=`find $simutrans_dir/save/ -maxdepth 1 -type d | wc -l`
     backup_dir=$simutrans_dir/save/backup-$backup_number
@@ -188,11 +189,17 @@ process_status() {
 
 # Build and install
 simutrans_install () {  
-  echo "Simutrans server instance: $instance building r$revision..."
+  echo "Building r$revision..." | log INFO
+  echo "Build log in $log_dir/build-r$revision.log" | log DEBUG
   cd build
   ./build.sh $instance $revision > $log_dir/build-r$revision.log 2>&1
   cd ..
-  simutrans_reload
+
+  if [[ -d $simutrans_install ]]; then
+    simutrans_reload
+  else
+    echo "Running with PID: $pid" | log INFO
+  fi
 }
 
 
@@ -201,9 +208,9 @@ simutrans_status () {
   pid=$(process_status)
 
   if [[ $pid -gt 1 ]]; then
-    echo "Simutrans server instance: $instance running with PID: $pid"
+    echo "Running with PID: $pid" | log INFO
   else
-    echo "Simutrans server instance: $instance is not running"
+    echo "Not running" | log INFO
   fi
 }
 
@@ -221,7 +228,7 @@ simutrans_status_code () {
 simutrans_start () {
   # Do nothing if already running
   if [[ $(process_status) -gt 1 ]]; then
-    echo "Simutrans server instance: $instance already running with PID: $pid"
+    echo "Already running with PID: $pid"
     exit 0
   fi
 
@@ -230,6 +237,9 @@ simutrans_start () {
     simutrans_install
   fi
 
+  echo "Starting server..." | log INFO
+
+  # Restore the game if possible, otherwise load provided savegame
   if [[ -e $simutrans_dir/server$port-restore.sve ]]; then
     su $USER -s /bin/sh -c "( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak 2>&1 & echo \$! >&3 ) 3>$pidfile >> $log_dir/sim.log"
   else
@@ -242,9 +252,9 @@ simutrans_stop () {
   pid=$(process_status)
   if [[ $pid -gt 1 ]]; then
     kill $pid
-    echo "Simutrans server instance: $instance stopped"
+    echo "Server stopped" | log INFO
   else
-    echo "Simutrans server instance: $instance is already stopped"
+    echo "Already stopped" | log INFO
   fi
 }
 
@@ -259,20 +269,22 @@ simutrans_restart() {
 simutrans_reload () {
   backup_savegames
 
-  simutrans_stop
-  
-  echo "Simutrans server instance: $instance is reloading..."
+  if [[ $(process_status) -gt 1 ]]; then
+    simutrans_stop
+  fi
+
+  echo "Reloading..." | log INFO
 
   # Copying paksets
-  echo "Extracting pakset..." | log INFO
+  echo "Extracting pakset..." | log DEBUG
   unzip -o $instance_dir/pak/*.zip -d $simutrans_dir | log DEBUG
 
   # Copying config
-  echo "Copying config file..." | log INFO
+  echo "Copying config file..." | log DEBUG
   cp -fv $instance_dir/config/simuconf.tab $simutrans_dir/config/ | log DEBUG
 
   # Copying savegames
-  echo "Copying savegames..." | log INFO
+  echo "Copying savegames..." | log DEBUG
   if [[ ! -d $simutrans_dir/save ]]; then
     mkdir $simutrans_dir/save
   fi
