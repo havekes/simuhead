@@ -4,8 +4,6 @@
 
 USER=simd
 
-LOG_FILE=simctl.log
-
 # Log levels : ERROR, WARN, INFO, DEBUG
 log() {
   while read data; do
@@ -28,7 +26,7 @@ log() {
         echo "$level: $data"
         ;;
       DEBUG)
-        if [[ -z ${VERBOSE+x} ]]; then
+        if [[ -z ${VERBOSE:+x} ]]; then
           echo "$level: $data"
         fi
         ;;
@@ -95,6 +93,13 @@ else
   exit 1
 fi
 
+# Check for the logging directory
+if [[ ! -d log/$instance ]]; then
+  mkdir log/$instance
+fi
+
+LOG_FILE=log/$instance/simctl.log
+
 # Check instance config
 instance_dir=instances/$instance
 instance_config=$instance_dir/$instance.conf
@@ -136,7 +141,7 @@ fi
 
 install_dir=servers/$instance/r$revision/simutrans
 pidfile=$instance_dir/$instance.pid
-logfile=$instance_dir/$instance.log
+logfile=log/$instance/sim.log
 
 # Backup savegames
 backup_savegames () {
@@ -171,7 +176,7 @@ process_status() {
 simutrans_install () {  
   echo "Building simutrans server for revision $revision" | log INFO
   cd build
-  ./build.sh $instance $revision | log DEBUG
+  ./build.sh $instance $revision > log/$instance/build-r$revision.log 2>&1
   cd ..
   simutrans_reload
 }
@@ -240,6 +245,10 @@ simutrans_restart() {
 simutrans_reload () {
   backup_savegames
 
+  simutrans_stop
+  
+  echo "Simutrans server instance: $instance is reloading..."
+
   # Copying paksets
   echo "Extracting pakset..." | log INFO
   unzip -o $instance_dir/pak/*.zip -d $install_dir | log DEBUG
@@ -253,7 +262,7 @@ simutrans_reload () {
   mkdir build/r$revision/simutrans/save/ | log DEBUG
   cp -fv $instance_dir/save/*.sve $install_dir/save/ | log DEBUG
 
-  simutrans_restart
+  simutrans_start
 }
 
 
