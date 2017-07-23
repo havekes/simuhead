@@ -5,7 +5,7 @@ INSTANCE=$1
 REVISION=$2
 install_dir=../servers/$INSTANCE/r$REVISION
 
-if [[ $REVISION -nq $(cat last_build.revision) ]]; then
+if [[ $REVISION -ne $(cat last_build.revision) ]]; then
   # Download revision and clean
   if [[ -d "trunk" ]]; then
     echo "Updating to r$REVISION..."

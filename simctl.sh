@@ -9,6 +9,8 @@ pushd `dirname $0` > /dev/null
 SCRIPTPATH=`pwd`
 popd > /dev/null
 
+VERBOSE=false
+
 # Log levels : ERROR, WARN, INFO, DEBUG
 log() {
   while read data; do
@@ -31,7 +33,7 @@ log() {
         echo "$level: $data"
         ;;
       DEBUG)
-        if [[ -z ${VERBOSE:+x} ]]; then
+        if [[ $VERBOSE -eq "true" ]]; then
           echo "$level: $data"
         fi
         ;;
