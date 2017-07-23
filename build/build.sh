@@ -1,6 +1,8 @@
 #!/bin/bash
 # Build simutrans on a linux server
 
+CORES=$(getconf _NPROCESSORS_ONLN)
+
 INSTANCE=$1
 REVISION=$2
 install_dir=../servers/$INSTANCE/r$REVISION
@@ -21,7 +23,7 @@ if [[ $REVISION -ne $(cat last_build.revision) ]]; then
   # Now inside trunk/
   echo "Building r$REVISION..."
   cp ../config.default ./
-  make
+  make -j$CORES
   strip build/default/sim
 
   # Exiting trunk/
@@ -30,7 +32,7 @@ fi
 
 # Copy the game files
 echo "Copying game files..."
-if [[ ! -d $install_dir ]]
+if [[ ! -d $install_dir ]]; then
   mkdir $install_dir
 fi
 cp -rf trunk/simutrans/ $install_dir
