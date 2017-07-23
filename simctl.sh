@@ -158,7 +158,7 @@ pidfile=$SCRIPTPATH/run/$instance.pid
 
 
 # Backup savegames
-backup_savegames () 
+backup_savegames () {
   if [[ -e $simutrans_dir/server$port-restore.sve ]]; then
     backup_number=`find $simutrans_dir/save/ -maxdepth 1 -type d | wc -l`
     backup_dir=$simutrans_dir/save/backup-$backup_number
