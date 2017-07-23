@@ -4,6 +4,11 @@
 
 USER=simd
 
+# Get the script path somewhat reliably (https://stackoverflow.com/a/4774063)
+pushd `dirname $0` > /dev/null
+SCRIPTPATH=`pwd`
+popd > /dev/null
+
 # Log levels : ERROR, WARN, INFO, DEBUG
 log() {
   while read data; do
@@ -93,17 +98,26 @@ else
   exit 1
 fi
 
-# Check for the logging directory
-if [[ ! -d log/$instance ]]; then
-  mkdir log/$instance
-fi
 
-LOG_FILE=log/$instance/simctl.log
-
-# Check instance config
-instance_dir=instances/$instance
+# Instance config
+instance_dir=$SCRIPTPATH/instances/$instance
 instance_config=$instance_dir/$instance.conf
 
+# Logs
+log_dir=$SCRIPTPATH/log/$instance
+if [[ ! -d $log_dir ]]; then
+  mkdir $log_dir
+fi
+LOG_FILE=$log_dir/simctl.log
+
+# Installs
+simutrans_dir=$SCRIPTPATH/servers/$instance/r$revision/simutrans
+
+# PID files
+pidfile=$SCRIPTPATH/run/$instance.pid
+
+
+# Check instance config
 if [[ -f $instance_config ]]; then
   source $instance_config
 else
@@ -139,17 +153,15 @@ if [[ -z ${debug:+x} ]]; then
   debug=2
 fi
 
-install_dir=servers/$instance/r$revision/simutrans
-pidfile=$instance_dir/$instance.pid
-logfile=log/$instance/sim.log
 
 # Backup savegames
 backup_savegames () {
-  if [[ -e $install_dir/server$port-restore.sve ]]; then
-    backup_number=`find $install_dir/save/ -maxdepth 1 -type d | wc -l`
-    backup_dir=$install_dir/save/backup-$backup_number
+  if [[ -e $simutrans_dir/server$port-restore.sve ]]; then
+    backup_number=`find $simutrans_dir/save/ -maxdepth 1 -type d | wc -l`
+    backup_dir=$simutrans_dir/save/backup-$backup_number
+
     mkdir $backup_dir
-    cp $install_dir/server$port-*.sve $backup_dir
+    cp $simutrans_dir/server$port-*.sve $backup_dir
   fi
 }
 
@@ -174,9 +186,9 @@ process_status() {
 
 # Build and install
 simutrans_install () {  
-  echo "Building simutrans server for revision $revision" | log INFO
+  echo "Simutrans server instance: $instance building r$revision..."
   cd build
-  ./build.sh $instance $revision > log/$instance/build-r$revision.log 2>&1
+  ./build.sh $instance $revision > $log_dir/build-r$revision.log 2>&1
   cd ..
   simutrans_reload
 }
@@ -212,14 +224,14 @@ simutrans_start () {
   fi
 
   # Check for install
-  if [[ ! -d $install_dir ]]; then
+  if [[ ! -d $simutrans_dir ]]; then
     simutrans_install
   fi
 
-  if [[ -e $install_dir/server$port-restore.sve ]]; then
-    su $USER -s /bin/sh -c "( $install_dir/sim -server $port -debug $debug -lang $lang -objects $pak 2>&1 & echo \$! >&3 ) 3>$pidfile >> $logfile"
+  if [[ -e $simutrans_dir/server$port-restore.sve ]]; then
+    su $USER -s /bin/sh -c "( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak 2>&1 & echo \$! >&3 ) 3>$pidfile >> $log_dir/sim.log"
   else
-    su $USER -s /bin/sh -c "( $install_dir/sim -server $port -debug $debug -lang $lang -objects $pak -load $save 2>&1 & echo \$! >&3 ) 3>$pidfile >> $logfile"
+    su $USER -s /bin/sh -c "( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak -load $save 2>&1 & echo \$! >&3 ) 3>$pidfile >> $log_dir/sim.log"
   fi
 }
 
@@ -251,18 +263,18 @@ simutrans_reload () {
 
   # Copying paksets
   echo "Extracting pakset..." | log INFO
-  unzip -o $instance_dir/pak/*.zip -d $install_dir | log DEBUG
+  unzip -o $instance_dir/pak/*.zip -d $simutrans_dir | log DEBUG
 
   # Copying config
   echo "Copying config file..." | log INFO
-  cp -fv $instance_dir/config/simuconf.tab $install_dir/config/ | log DEBUG
+  cp -fv $instance_dir/config/simuconf.tab $simutrans_dir/config/ | log DEBUG
 
   # Copying savegames
   echo "Copying savegames..." | log INFO
-  if [[ ! -d $install_dir/save ]]; then
-    mkdir $install_dir/save
+  if [[ ! -d $simutrans_dir/save ]]; then
+    mkdir $simutrans_dir/save
   fi
-  cp -fv $instance_dir/save/*.sve $install_dir/save/ | log DEBUG
+  cp -fv $instance_dir/save/*.sve $simutrans_dir/save/ | log DEBUG
 
   simutrans_start
 }
