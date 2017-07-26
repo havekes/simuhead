@@ -42,7 +42,7 @@ fi
 # Copy the game files
 echo "Copying game files..."
 if [[ ! -d $install_dir ]]; then
-  mkdir $install_dir
+  mkdir -p $install_dir
 fi
 cp -rf trunk/simutrans/ $install_dir
 cp -f trunk/build/default/sim $install_dir/simutrans/
