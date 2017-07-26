@@ -259,9 +259,9 @@ simutrans_start () {
 
   # Restore the game if possible, otherwise load provided savegame
   if [[ -e $simutrans_dir/server$port-restore.sve ]]; then
-    su $USER -s /bin/sh -c "( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak 2>&1 & echo \$! >&3 ) 3>$pidfile >> $log_dir/sim.log"
+    ( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak 2>&1 & echo \$! >&3 ) 3>$pidfile >> $log_dir/sim.log
   else
-    su $USER -s /bin/sh -c "( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak -load $save 2>&1 & echo \$! >&3 ) 3>$pidfile >> $log_dir/sim.log"
+    ( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak -load $save 2>&1 & echo \$! >&3 ) 3>$pidfile >> $log_dir/sim.log
   fi
 }
 
