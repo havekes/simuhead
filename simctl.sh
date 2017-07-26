@@ -173,7 +173,8 @@ process_status() {
   # Check if the pid file exists and the process is running
   if [[ -e $pidfile ]]; then
     pid=$(cat $pidfile)
-    if ps -p $pid > /dev/null then
+    if ps -p $pid > /dev/null
+    then
       # Then the server is running
       echo $pid
     else
