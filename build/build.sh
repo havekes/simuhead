@@ -11,7 +11,7 @@ pushd `dirname $0` > /dev/null
 SCRIPTPATH=`pwd`
 popd > /dev/null
 
-install_dir=$SCRIPTPATH/../servers/$INSTANCE/r$REVISION
+install_dir=$SCRIPTPATH/$INSTANCE/r$REVISION
 
 if [[ $REVISION -ne $(cat last_build.revision) ]]; then
   # Download revision and clean

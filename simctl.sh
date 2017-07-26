@@ -151,7 +151,7 @@ fi
 
 
 # Installs
-simutrans_dir=$SCRIPTPATH/servers/$instance/r$revision/simutrans
+simutrans_dir=$SCRIPTPATH/build/$instance/r$revision/simutrans
 
 # PID files
 pidfile=$SCRIPTPATH/run/$instance.pid
