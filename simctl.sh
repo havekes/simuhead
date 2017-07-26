@@ -187,6 +187,24 @@ process_status() {
   fi
 }
 
+# Load paksets, config and savegames
+simutrans_load () {
+  # Copying paksets
+  echo "Extracting pakset..." | log DEBUG
+  unzip -o $instance_dir/pak/*.zip -d $simutrans_dir | log DEBUG
+
+  # Copying config
+  echo "Copying config file..." | log DEBUG
+  cp -fv $instance_dir/config/simuconf.tab $simutrans_dir/config/ | log DEBUG
+
+  # Copying savegames
+  echo "Copying savegames..." | log DEBUG
+  if [[ ! -d $simutrans_dir/save ]]; then
+    mkdir $simutrans_dir/save
+  fi
+  cp -fv $instance_dir/save/*.sve $simutrans_dir/save/ | log DEBUG
+}
+
 # Build and install
 simutrans_install () {  
   echo "Building r$revision..." | log INFO
@@ -200,10 +218,11 @@ simutrans_install () {
   else
     echo "Running with PID: $pid" | log INFO
   fi
+
+  simutrans_load
 }
 
 
-# Show if the server is running
 simutrans_status () {
   pid=$(process_status)
 
@@ -224,7 +243,6 @@ simutrans_status_code () {
   fi
 }
 
-# Start an instance
 simutrans_start () {
   # Do nothing if already running
   if [[ $(process_status) -gt 1 ]]; then
@@ -247,7 +265,6 @@ simutrans_start () {
   fi
 }
 
-# Stop an instance
 simutrans_stop () {
   pid=$(process_status)
   if [[ $pid -gt 1 ]]; then
@@ -258,41 +275,22 @@ simutrans_stop () {
   fi
 }
 
-# Restart an instance
 simutrans_restart() {
   simutrans_stop
   sleep 1
   simutrans_start
 }
 
-# Reload paksets, config and savegames
-simutrans_reload () {
+simutrans_reload() {
   backup_savegames
-
+  
   if [[ $(process_status) -gt 1 ]]; then
     simutrans_stop
   fi
 
-  echo "Reloading..." | log INFO
-
-  # Copying paksets
-  echo "Extracting pakset..." | log DEBUG
-  unzip -o $instance_dir/pak/*.zip -d $simutrans_dir | log DEBUG
-
-  # Copying config
-  echo "Copying config file..." | log DEBUG
-  cp -fv $instance_dir/config/simuconf.tab $simutrans_dir/config/ | log DEBUG
-
-  # Copying savegames
-  echo "Copying savegames..." | log DEBUG
-  if [[ ! -d $simutrans_dir/save ]]; then
-    mkdir $simutrans_dir/save
-  fi
-  cp -fv $instance_dir/save/*.sve $simutrans_dir/save/ | log DEBUG
-
+  simutrans_load
   simutrans_start
 }
-
 
 # Action switching
 case $action in
