@@ -26,9 +26,9 @@ http.createServer(function(request, response) {
         }
 
         statuses.push({
-          'instance': instance.trim(),
-          'revision': instanceRevision.trim(),
-          'status': instanceStatus
+          'instance': instance,
+          'revision': instanceRevision.replace('\n', ''),
+          'status': instanceStatus.replace('\n', '')
         });
       }
     }
