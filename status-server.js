@@ -1,6 +1,6 @@
 #!/usr/bin/env nodejs
 
-const PORT = 8101;
+const PORT = 8111;
 
 const http = require('http');
 const execSync = require('child_process').execSync;
@@ -40,4 +40,4 @@ http.createServer(function(request, response) {
   }
 
   response.end();
-});
+}).listen(PORT);
