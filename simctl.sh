@@ -272,6 +272,7 @@ simutrans_stop () {
   pid=$(process_status)
   if [[ $pid -gt 1 ]]; then
     kill $pid
+    rm $pidfile
     echo "Server stopped" | log INFO
   else
     echo "Already stopped" | log INFO
