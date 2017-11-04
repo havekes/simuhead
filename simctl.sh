@@ -48,8 +48,8 @@ usage() {
 }
 
 # getopt options
-SHORT=v:
-LONG=verbose:
+SHORT=v
+LONG=verbose
 
 # Check if enhanced getopt is available
 getopt --test > /dev/null
