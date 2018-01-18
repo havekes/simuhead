@@ -259,7 +259,7 @@ simutrans_start () {
   echo "Starting server..." | log INFO
 
   # Restore the game if possible, otherwise load provided savegame
-  if [[ -e $simutrans_dir/server$port-restore.sve ]]; then
+  if [[ -e $simutrans_dir/server$port-network.sve ]]; then
     ( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak 2>&1 & echo $! > $pidfile ) >> $log_dir/sim.log
     echo "Using command: $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak 2>&1 & echo $! > $pidfile" | log DEBUG
   else
