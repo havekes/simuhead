@@ -164,7 +164,7 @@ backup_savegames () {
     backup_dir=$simutrans_dir/save/backup-$backup_number
 
     mkdir $backup_dir
-    cp $simutrans_dir/server$port-*.sve $backup_dir
+    mv $simutrans_dir/server$port-*.sve $backup_dir
   fi
 }
 
