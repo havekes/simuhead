@@ -286,10 +286,14 @@ simutrans_restart() {
 }
 
 simutrans_reload() {
+  simutrans_stop
+
+  # Backup the saves
   backup_savegames
-  
-  if [[ $(process_status) -gt 1 ]]; then
-    simutrans_stop
+
+  # Check if we need to build a new revision
+  if [[ ! -d $simutrans_dir ]]; then
+    simutrans_install
   fi
 
   simutrans_load
