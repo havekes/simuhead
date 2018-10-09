@@ -2,14 +2,14 @@
 # Launch and manage simutrans servers
 # Author: Greg Havekes
 
+# Configuration
+
+# The user running the process
 USER=simd
-
-# Get the script path somewhat reliably (https://stackoverflow.com/a/4774063)
-pushd `dirname $0` > /dev/null
-SCRIPTPATH=`pwd`
-popd > /dev/null
-
+# Change to true to log more debug informations
 VERBOSE=false
+# Change only if you want to move the instances to another directory (not recommended)
+ROOTDIR=/home/$USER/simutrans-server-manager/
 
 # Log levels : ERROR, WARN, INFO, DEBUG
 log() {
@@ -99,11 +99,11 @@ fi
 
 
 # Instance config
-instance_dir=$SCRIPTPATH/instances/$instance
+instance_dir=$ROOTDIR/instances/$instance
 instance_config=$instance_dir/$instance.conf
 
 # Logs
-log_dir=$SCRIPTPATH/log/$instance
+log_dir=$ROOTDIR/log/$instance
 if [[ ! -d $log_dir ]]; then
   mkdir $log_dir
 fi
@@ -151,10 +151,10 @@ fi
 
 
 # Installs
-simutrans_dir=$SCRIPTPATH/build/$instance/r$revision/simutrans
+simutrans_dir=$ROOTDIR/build/$instance/r$revision/simutrans
 
 # PID files
-pidfile=$SCRIPTPATH/run/$instance.pid
+pidfile=$ROOTDIR/run/$instance.pid
 
 
 # Backup savegames
@@ -260,10 +260,10 @@ simutrans_start () {
 
   # Restore the game if possible, otherwise load provided savegame
   if [[ -e $simutrans_dir/server$port-network.sve ]]; then
-    ( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak 2>&1 & echo $! > $pidfile ) >> $log_dir/sim.log
+    sudo -H -u $USER bash -c '( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak 2>&1 & echo $! > $pidfile ) >> $log_dir/sim.log'
     echo "Using command: $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak" | log DEBUG
   else
-    ( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak -load $save 2>&1 & echo $! > $pidfile ) >> $log_dir/sim.log
+    sudo -H -u $USER bash -c '( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak -load $save 2>&1 & echo $! > $pidfile ) >> $log_dir/sim.log'
     echo "Using command: $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak -load $save" | log DEBUG
   fi
 }
