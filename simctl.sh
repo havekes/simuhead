@@ -2,14 +2,8 @@
 # Launch and manage simutrans servers
 # Author: Greg Havekes
 
-# Configuration
-
-# The user running the process
-USER=simd
-# Change to true to log more debug informations
-VERBOSE=false
-# Change only if you want to move the instances to another directory (not recommended)
-ROOTDIR=/home/$USER/simutrans-server-manager/
+# Import configuration
+source simctl.conf
 
 # Log levels : ERROR, WARN, INFO, DEBUG
 log() {
