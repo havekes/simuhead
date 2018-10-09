@@ -2,14 +2,8 @@
 # Launch and manage simutrans servers
 # Author: Greg Havekes
 
-USER=simd
-
-# Get the script path somewhat reliably (https://stackoverflow.com/a/4774063)
-pushd `dirname $0` > /dev/null
-SCRIPTPATH=`pwd`
-popd > /dev/null
-
-VERBOSE=false
+# Import configuration
+source simctl.conf
 
 # Log levels : ERROR, WARN, INFO, DEBUG
 log() {
@@ -99,11 +93,11 @@ fi
 
 
 # Instance config
-instance_dir=$SCRIPTPATH/instances/$instance
+instance_dir=$ROOTDIR/instances/$instance
 instance_config=$instance_dir/$instance.conf
 
 # Logs
-log_dir=$SCRIPTPATH/log/$instance
+log_dir=$ROOTDIR/log/$instance
 if [[ ! -d $log_dir ]]; then
   mkdir $log_dir
 fi
@@ -151,10 +145,10 @@ fi
 
 
 # Installs
-simutrans_dir=$SCRIPTPATH/build/$instance/r$revision/simutrans
+simutrans_dir=$ROOTDIR/build/$instance/r$revision/simutrans
 
 # PID files
-pidfile=$SCRIPTPATH/run/$instance.pid
+pidfile=$ROOTDIR/run/$instance.pid
 
 
 # Backup savegames
@@ -192,7 +186,7 @@ process_status() {
 simutrans_load () {
   # Copying paksets
   echo "Extracting pakset..." | log DEBUG
-  unzip -o $instance_dir/pak/*.zip -d $simutrans_dir | log DEBUG
+  unzip -o "$instance_dir/pak/*.zip" -d $simutrans_dir | log DEBUG
 
   # Copying config
   echo "Copying config file..." | log DEBUG
@@ -260,11 +254,11 @@ simutrans_start () {
 
   # Restore the game if possible, otherwise load provided savegame
   if [[ -e $simutrans_dir/server$port-network.sve ]]; then
-    ( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak 2>&1 & echo $! > $pidfile ) >> $log_dir/sim.log
-    echo "Using command: $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak 2>&1 & echo $! > $pidfile" | log DEBUG
+    sudo -H -u $USER bash -c "( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak 2>&1 & echo $! > $pidfile ) >> $log_dir/sim.log"
+    echo "Using command: $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak" | log DEBUG
   else
-    ( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak -load $save 2>&1 & echo $! > $pidfile ) >> $log_dir/sim.log
-    echo "Using command: $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak -load $save 2>&1 & echo $! > $pidfile" | log DEBUG
+    sudo -H -u $USER bash -c "( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak -load $save 2>&1 & echo $! > $pidfile ) >> $log_dir/sim.log"
+    echo "Using command: $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak -load $save" | log DEBUG
   fi
 }
 
@@ -273,7 +267,7 @@ simutrans_stop () {
   if [[ $pid -gt 1 ]]; then
     kill $pid
     rm $pidfile
-    echo "Server stopped" | log INFO
+    echo "Server stopped PID: $pid" | log INFO
   else
     echo "Already stopped" | log INFO
   fi
@@ -286,10 +280,14 @@ simutrans_restart() {
 }
 
 simutrans_reload() {
+  simutrans_stop
+
+  # Backup the saves
   backup_savegames
-  
-  if [[ $(process_status) -gt 1 ]]; then
-    simutrans_stop
+
+  # Check if we need to build a new revision
+  if [[ ! -d $simutrans_dir ]]; then
+    simutrans_install
   fi
 
   simutrans_load

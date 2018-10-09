@@ -49,8 +49,8 @@ cp -f trunk/build/default/sim $install_dir/simutrans/
 
 # Downloading language files
 echo "Running get_lang_files.sh..."
-cp trunk/get_lang_files.sh $install_dir/simutrans/text/
-cd $install_dir/simutrans/text/
+cp trunk/get_lang_files.sh $install_dir/
+cd $install_dir/
 ./get_lang_files.sh
 
 echo "Done installing r$REVISION!"
