@@ -261,10 +261,10 @@ simutrans_start () {
   # Restore the game if possible, otherwise load provided savegame
   if [[ -e $simutrans_dir/server$port-network.sve ]]; then
     ( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak 2>&1 & echo $! > $pidfile ) >> $log_dir/sim.log
-    echo "Using command: $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak 2>&1 & echo $! > $pidfile" | log DEBUG
+    echo "Using command: $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak" | log DEBUG
   else
     ( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak -load $save 2>&1 & echo $! > $pidfile ) >> $log_dir/sim.log
-    echo "Using command: $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak -load $save 2>&1 & echo $! > $pidfile" | log DEBUG
+    echo "Using command: $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak -load $save" | log DEBUG
   fi
 }
 
@@ -273,7 +273,7 @@ simutrans_stop () {
   if [[ $pid -gt 1 ]]; then
     kill $pid
     rm $pidfile
-    echo "Server stopped" | log INFO
+    echo "Server stopped PID: $pid" | log INFO
   else
     echo "Already stopped" | log INFO
   fi
