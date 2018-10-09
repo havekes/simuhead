@@ -192,7 +192,7 @@ process_status() {
 simutrans_load () {
   # Copying paksets
   echo "Extracting pakset..." | log DEBUG
-  unzip -o $instance_dir/pak/*.zip -d $simutrans_dir | log DEBUG
+  unzip -o "$instance_dir/pak/*.zip" -d $simutrans_dir | log DEBUG
 
   # Copying config
   echo "Copying config file..." | log DEBUG
