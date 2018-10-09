@@ -260,10 +260,10 @@ simutrans_start () {
 
   # Restore the game if possible, otherwise load provided savegame
   if [[ -e $simutrans_dir/server$port-network.sve ]]; then
-    sudo -H -u $USER bash -c '( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak 2>&1 & echo $! > $pidfile ) >> $log_dir/sim.log'
+    sudo -H -u $USER bash -c "( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak 2>&1 & echo $! > $pidfile ) >> $log_dir/sim.log"
     echo "Using command: $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak" | log DEBUG
   else
-    sudo -H -u $USER bash -c '( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak -load $save 2>&1 & echo $! > $pidfile ) >> $log_dir/sim.log'
+    sudo -H -u $USER bash -c "( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak -load $save 2>&1 & echo $! > $pidfile ) >> $log_dir/sim.log"
     echo "Using command: $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak -load $save" | log DEBUG
   fi
 }
