@@ -1,4 +1,4 @@
-# Simutrans server manager
+# Simuhead
 
 Easy to use script to manage simutrans server intallations and processes.
 
@@ -7,7 +7,7 @@ Easy to use script to manage simutrans server intallations and processes.
 - Server instances: each instance has it's own parameters, simuconf.tab, save(s) and pak(s)
 - Automatic builds
 - Start/stop/restart of instances
-- Logging (not quite complete yet)
+- Logging (not fully featured yet)
 - Loads save only when first starting the server, then uses the auto saves
 
 ## Yet to come
@@ -20,35 +20,73 @@ Easy to use script to manage simutrans server intallations and processes.
 
 ## Get Started
 
-- Create an instance with your custom parameters, simuconf.tab, save(s) and pak(s) (use example instance for reference)
+### What's an instance
+
+An instance is a specific tree of directories and files that comprises of the following elements:
+- A config file specific to the manager
+- A simutrans config file (simuconf.tab)
+- Pakset(s)
+- Save file(s)
+
+The script will take care of conpiling the simutrans server and copying the required files (paks, saves, simuconf.tab).
+If you change the config file, you need to run the `reload` comand.
+See the Reference section for more details on commands options.
+
+### Base setup
+
+- Create a new user to run your simutrans servers
+- Clone this repository in it's home directory
+- 
+- Create an instance with your custom config, simuconf.tab, save(s) and pak(s) (use the example instance for reference)
 - Run `./simctl.sh start <instance>`.
 
-## Usage
+## Reference
 
-### First start
+### Start
+Command: `simctl.sh start [instance]`
 
-Running `./simctl.sh start <instance>` for the first time will take the following steps:
+Starts the server and loads the last automatically saved game (this happens when a user connects to the server or when the server is stopped properly).
+
+Running `simctl.sh start [instance]` for a new instance will do the following:
 - Compiling the revision set in the instance's config file (you'll need the usual packages needed to build simutrans, on Debian/Ubuntu you can run `apt-get install build-essential zlib1g-dev libbz2-dev` to get them)
 - Extracting your instance's pakset(s) to the installation directory
 - Copying your instance's simuconf.tab and save(s) to the installation directory
-- Starting your instance loading the save defined in the instance's config
+- Starting your instance loading the save file defined in the instance's config
 
-### Start/Stop/Restart
+### Stop
+Command: `simctl.sh stop [instance]`
 
-- `./simctl.sh start <instance>` After the first start, it will load the last automatically saved game (this happens when a user connects to the server or when the server is stopped properly)
-- `./simctl.sh stop <instance>` Nothing fancy here, only kills the server process
-- `./simctl.sh restart <instance>` Same thing as `stop` then `start`
+Kills the server process.
+
+### Restart
+
+Command: `simctl.sh restart [instance]`
+
+Shortcut for 
+```
+simctl.sh stop [instance]
+simctl.sh start [instance]
+```
 
 ### Reload
 
-If you change an instance's simuconf.tab, pakset, or save, you need to reload the instance, which basically means copying over the new stuff to the installation directory.
+Command: `simctl.sh reload [instance]`
 
-To do so, use: `./simctl.sh reload <instance>`
+Builds a new excecutable if the revision changed
+Copies over the paks, saves and siuconf.tab (will overwrite the old ones if the revision didn't change).
+It will also make a backup of the last automatically saved game.
 
-This will make a backup of the last automatically saved game.
+You need to reload an instance if you change an instance's config, simuconf.tab, pakset, or save.
+
 
 ### Status
 
-You can check the status of an instance with: `./simctl.sh status <instance>`
+Command: `simctl.sh status [instance]`
 
-You can also check which revision of simutrans a instance is currently using with: `./simctl.sh revision <instance>`
+Returns whethers the server process is running or stopped
+
+### Revision
+
+Command: `simctl.sh revision [instance]`
+
+Returns which revision the instance is configured to use
