@@ -2,8 +2,10 @@
 # Launch and manage simutrans servers
 # Author: Greg Havekes
 
+VERSION=1.0.0
+
 # Import configuration
-source simctl.conf
+source head.conf
 
 # Log levels : ERROR, WARN, INFO, DEBUG
 log() {
@@ -38,12 +40,12 @@ log() {
 # Parameters parsing
 
 usage() {
-  echo "Usage : simctl {status|start|stop|restart|reload|statuscode|revision} <instance>"
+  echo "Usage : head.sh {status|start|stop|restart|reload|statuscode|revision} [instance]"
 }
 
 # getopt options
-SHORT=v
-LONG=verbose
+SHORT=vh
+LONG=verbose,help,version
 
 # Check if enhanced getopt is available
 getopt --test > /dev/null
@@ -69,6 +71,14 @@ while true; do
     -v|--verbose)
       VERBOSE=true
       shift
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    --version)
+      echo "Simuhead version $VERSION"
+      exit 1
       ;;
     --)
       shift
@@ -101,7 +111,7 @@ log_dir=$ROOTDIR/log/$instance
 if [[ ! -d $log_dir ]]; then
   mkdir $log_dir
 fi
-LOG_FILE=$log_dir/simctl.log
+LOG_FILE=$log_dir/head.log
 
 # Stdout prefix
 PREFIX="Simutrans server instance: $instance"
@@ -254,10 +264,10 @@ simutrans_start () {
 
   # Restore the game if possible, otherwise load provided savegame
   if [[ -e $simutrans_dir/server$port-network.sve ]]; then
-    sudo -H -u $USER bash -c "( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak 2>&1 & echo $! > $pidfile ) >> $log_dir/sim.log"
+    sudo -H -u $USER bash -c "( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak 2>&1 & echo \$! > $pidfile ) >> $log_dir/sim.log"
     echo "Using command: $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak" | log DEBUG
   else
-    sudo -H -u $USER bash -c "( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak -load $save 2>&1 & echo $! > $pidfile ) >> $log_dir/sim.log"
+    sudo -H -u $USER bash -c "( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak -load $save 2>&1 & echo \$! > $pidfile ) >> $log_dir/sim.log"
     echo "Using command: $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak -load $save" | log DEBUG
   fi
 }
