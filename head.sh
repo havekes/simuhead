@@ -38,12 +38,12 @@ log() {
 # Parameters parsing
 
 usage() {
-  echo "Usage : head {status|start|stop|restart|reload|statuscode|revision} <instance>"
+  echo "Usage : head.sh {status|start|stop|restart|reload|statuscode|revision} [instance]"
 }
 
 # getopt options
-SHORT=v
-LONG=verbose
+SHORT=vh
+LONG=verbose,help
 
 # Check if enhanced getopt is available
 getopt --test > /dev/null
@@ -70,6 +70,9 @@ while true; do
       VERBOSE=true
       shift
       ;;
+    -h|--help)
+      usage
+      exit 0
     --)
       shift
       break
