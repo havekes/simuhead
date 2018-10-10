@@ -3,7 +3,7 @@
 # Author: Greg Havekes
 
 # Import configuration
-source simctl.conf
+source head.conf
 
 # Log levels : ERROR, WARN, INFO, DEBUG
 log() {
@@ -38,7 +38,7 @@ log() {
 # Parameters parsing
 
 usage() {
-  echo "Usage : simctl {status|start|stop|restart|reload|statuscode|revision} <instance>"
+  echo "Usage : head {status|start|stop|restart|reload|statuscode|revision} <instance>"
 }
 
 # getopt options
@@ -101,7 +101,7 @@ log_dir=$ROOTDIR/log/$instance
 if [[ ! -d $log_dir ]]; then
   mkdir $log_dir
 fi
-LOG_FILE=$log_dir/simctl.log
+LOG_FILE=$log_dir/head.log
 
 # Stdout prefix
 PREFIX="Simutrans server instance: $instance"
