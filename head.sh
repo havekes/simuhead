@@ -2,6 +2,8 @@
 # Launch and manage simutrans servers
 # Author: Greg Havekes
 
+VERSION=1.0.0
+
 # Import configuration
 source head.conf
 
@@ -43,7 +45,7 @@ usage() {
 
 # getopt options
 SHORT=vh
-LONG=verbose,help
+LONG=verbose,help,version
 
 # Check if enhanced getopt is available
 getopt --test > /dev/null
@@ -73,6 +75,11 @@ while true; do
     -h|--help)
       usage
       exit 0
+      ;;
+    --version)
+      echo "Simuhead version $VERSION"
+      exit 1
+      ;;
     --)
       shift
       break
