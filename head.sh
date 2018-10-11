@@ -250,7 +250,8 @@ simutrans_status_code () {
 
 simutrans_start () {
   # Do nothing if already running
-  if [[ $(process_status) -gt 1 ]]; then
+  pid=$(process_status)
+  if [[ $pid -gt 1 ]]; then
     echo "Already running with PID: ${pid}"
     exit 0
   fi
