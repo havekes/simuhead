@@ -16,18 +16,18 @@ log() {
       level=$1
     fi
 
-    echo "$level: $data" >> $LOG_FILE
+    echo "${level}: ${data}" >> $LOG_FILE
 
     case $level in
       ERROR)
-        echo "$PREFIX | ERROR: $data"
+        echo "${PREFIX} | ERROR: ${data}"
         ;;
       INFO)
-        echo "$PREFIX | $data"
+        echo "${PREFIX} | ${data}"
         ;;
       DEBUG)
         if [[ $VERBOSE -eq "true" ]]; then
-          echo "$PREFIX | DEBUG: $data"
+          echo "${PREFIX} | DEBUG: ${data}"
         fi
         ;;
       *)
@@ -77,7 +77,7 @@ while true; do
       exit 0
       ;;
     --version)
-      echo "Simuhead version $VERSION"
+      echo "Simuhead version ${VERSION}"
       exit 1
       ;;
     --)
@@ -103,48 +103,48 @@ fi
 
 
 # Instance config
-instance_dir=$ROOTDIR/instances/$instance
-instance_config=$instance_dir/$instance.conf
+instance_dir=${ROOTDIR}/instances/${instance}
+instance_config=${instance_dir}/${instance}.conf
 
 # Logs
-log_dir=$ROOTDIR/log/$instance
+log_dir=${ROOTDIR}/log/${instance}
 if [[ ! -d $log_dir ]]; then
   mkdir $log_dir
 fi
-LOG_FILE=$log_dir/head.log
+LOG_FILE=${log_dir}/head.log
 
 # Stdout prefix
-PREFIX="Simutrans server instance: $instance"
+PREFIX="Simuhead instance: ${instance}"
 
 
 # Check instance config
 if [[ -f $instance_config ]]; then
   source $instance_config
 else
-  echo "There is no config file for instance $instance in $instance_config" | log ERROR
+  echo "There is no config file for instance ${instance} in ${instance_config}" | log ERROR
   exit 1
 fi
 
 if [[ -z ${revision:+x} ]]; then
-  echo "Please set the revision in the instance's config file: $instance_config" | log ERROR
+  echo "Please set the revision in the instance's config file: ${instance_config}" | log ERROR
   exit 1
 fi
 
 if [[ -z ${port:+x} ]]; then
-  echo "Please set the port in the instance's config file: $instance_config" | log ERROR
+  echo "Please set the port in the instance's config file: ${instance_config}" | log ERROR
   exit 1
 fi
 if [[ -z ${pak:+x} ]]; then
-  echo "Please set the pak in the instance's config file: $instance_config" | log ERROR
+  echo "Please set the pak in the instance's config file: ${instance_config}" | log ERROR
   exit 1
 fi
 if [[ -z ${save:+x} ]]; then
-  echo "Please set the save in the instance's config file: $instance_config" | log ERROR
+  echo "Please set the save in the instance's config file: ${instance_config}" | log ERROR
   exit 1
 fi
 
 if [[ -z ${lang:+x} ]]; then
-  echo "Please set the lang in the instance's config file: $instance_config" | log ERROR
+  echo "Please set the lang in the instance's config file: ${instance_config}" | log ERROR
   exit 1
 fi
 
@@ -155,20 +155,20 @@ fi
 
 
 # Installs
-simutrans_dir=$ROOTDIR/build/$instance/r$revision/simutrans
+simutrans_dir=${ROOTDIR}/build/${instance}/r${revision}/simutrans
 
 # PID files
-pidfile=$ROOTDIR/run/$instance.pid
+pidfile=${ROOTDIR}/run/${instance}.pid
 
 
 # Backup savegames
 backup_savegames () {
-  if [[ -e $simutrans_dir/server$port-network.sve ]]; then
-    backup_number=`find $simutrans_dir/save/ -maxdepth 1 -type d | wc -l`
-    backup_dir=$simutrans_dir/save/backup-$backup_number
+  if [[ -e ${simutrans_dir}/server${port}-network.sve ]]; then
+    backup_number=`find ${simutrans_dir}/save/ -maxdepth 1 -type d | wc -l`
+    backup_dir=${simutrans_dir}/save/backup-${backup_number}
 
     mkdir $backup_dir
-    mv $simutrans_dir/server$port-*.sve $backup_dir
+    mv ${simutrans_dir}/server${port}-*.sve $backup_dir
   fi
 }
 
@@ -196,32 +196,32 @@ process_status() {
 simutrans_load () {
   # Copying paksets
   echo "Extracting pakset..." | log DEBUG
-  unzip -o "$instance_dir/pak/*.zip" -d $simutrans_dir | log DEBUG
+  unzip -o "${instance_dir}/pak/*.zip" -d $simutrans_dir | log DEBUG
 
   # Copying config
   echo "Copying config file..." | log DEBUG
-  cp -fv $instance_dir/config/simuconf.tab $simutrans_dir/config/ | log DEBUG
+  cp -fv ${instance_dir}/config/simuconf.tab ${simutrans_dir}/config/ | log DEBUG
 
   # Copying savegames
   echo "Copying savegames..." | log DEBUG
-  if [[ ! -d $simutrans_dir/save ]]; then
-    mkdir $simutrans_dir/save
+  if [[ ! -d ${simutrans_dir}/save ]]; then
+    mkdir ${simutrans_dir}/save
   fi
-  cp -fv $instance_dir/save/*.sve $simutrans_dir/save/ | log DEBUG
+  cp -fv ${instance_dir}/save/*.sve ${simutrans_dir}/save/ | log DEBUG
 }
 
 # Build and install
 simutrans_install () {  
-  echo "Building r$revision..." | log INFO
-  echo "Build log in $log_dir/build-r$revision.log" | log DEBUG
+  echo "Building r${revision}..." | log INFO
+  echo "Build log in ${log_dir}/build-r${revision}.log" | log DEBUG
   cd build
-  ./build.sh $instance $revision > $log_dir/build-r$revision.log 2>&1
+  ./build.sh $instance $revision > ${log_dir}/build-r${revision}.log 2>&1
   cd ..
 
   if [[ -d $simutrans_install ]]; then
     simutrans_reload
   else
-    echo "Running with PID: $pid" | log INFO
+    echo "Running with PID: ${pid}" | log INFO
   fi
 
   simutrans_load
@@ -232,7 +232,7 @@ simutrans_status () {
   pid=$(process_status)
 
   if [[ $pid -gt 1 ]]; then
-    echo "Running with PID: $pid" | log INFO
+    echo "Running with PID: ${pid}" | log INFO
   else
     echo "Not running" | log INFO
   fi
@@ -251,7 +251,7 @@ simutrans_status_code () {
 simutrans_start () {
   # Do nothing if already running
   if [[ $(process_status) -gt 1 ]]; then
-    echo "Already running with PID: $pid"
+    echo "Already running with PID: ${pid}"
     exit 0
   fi
 
@@ -263,12 +263,12 @@ simutrans_start () {
   echo "Starting server..." | log INFO
 
   # Restore the game if possible, otherwise load provided savegame
-  if [[ -e $simutrans_dir/server$port-network.sve ]]; then
-    sudo -H -u $USER bash -c "( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak 2>&1 & echo \$! > $pidfile ) >> $log_dir/sim.log"
-    echo "Using command: $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak" | log DEBUG
+  if [[ -e ${simutrans_dir}/server${port}-network.sve ]]; then
+    sudo -H -u $USER bash -c "( ${simutrans_dir}/sim -server $port -debug $debug -lang $lang -objects $pak 2>&1 & echo \$! > $pidfile ) >> ${log_dir}/sim.log"
+    echo "Using command: ${simutrans_dir}/sim -server $port -debug $debug -lang $lang -objects $pak" | log DEBUG
   else
-    sudo -H -u $USER bash -c "( $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak -load $save 2>&1 & echo \$! > $pidfile ) >> $log_dir/sim.log"
-    echo "Using command: $simutrans_dir/sim -server $port -debug $debug -lang $lang -objects $pak -load $save" | log DEBUG
+    sudo -H -u $USER bash -c "( ${simutrans_dir}/sim -server $port -debug $debug -lang $lang -objects $pak -load $save 2>&1 & echo \$! > $pidfile ) >> ${log_dir}/sim.log"
+    echo "Using command: ${simutrans_dir}/sim -server $port -debug $debug -lang $lang -objects $pak -load $save" | log DEBUG
   fi
 }
 
@@ -277,7 +277,7 @@ simutrans_stop () {
   if [[ $pid -gt 1 ]]; then
     kill $pid
     rm $pidfile
-    echo "Server stopped PID: $pid" | log INFO
+    echo "Server stopped PID: ${pid}" | log INFO
   else
     echo "Already stopped" | log INFO
   fi
@@ -328,7 +328,7 @@ case $action in
     echo $revision;
     ;;
   *)
-    echo "Action $action does not exist."
+    echo "Action ${action} does not exist."
     usage
     exit 1
     ;;
