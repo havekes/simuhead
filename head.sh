@@ -2,7 +2,7 @@
 # Launch and manage simutrans servers
 # Author: Greg Havekes
 
-VERSION=1.0.0
+VERSION=1.1.0
 
 # Import configuration
 source head.conf
@@ -270,6 +270,8 @@ simutrans_start () {
     sudo -H -u $USER bash -c "( ${simutrans_dir}/sim -server $port -debug $debug -lang $lang -objects $pak -load $save 2>&1 & echo \$! > $pidfile ) >> ${log_dir}/sim.log"
     echo "Using command: ${simutrans_dir}/sim -server $port -debug $debug -lang $lang -objects $pak -load $save" | log DEBUG
   fi
+
+  simutrans_status
 }
 
 simutrans_stop () {
