@@ -13,17 +13,19 @@ popd > /dev/null
 
 install_dir=$SCRIPTPATH/$INSTANCE/r$REVISION
 
-if [[ $REVISION -ne $(cat last_build.revision) ]]; then
-  # Download revision and clean
-  if [[ -d "trunk" ]]; then
-    echo "Updating to r$REVISION..."
-    cd trunk
-    svn up -r $REVISION
-    make clean
-  else
-    "Cloning r$REVISION..."
-    svn co --username anon -r $REVISION svn://servers.simutrans.org/simutrans/trunk
-    cd trunk
+if [[ ! -e "${install_dir}/sim" ]]; then
+  if [[ $REVISION -ne $(cat last_build.revision) ]]; then
+    # Download revision and clean
+    if [[ -d "trunk" ]]; then
+      echo "Updating to r$REVISION..."
+      cd trunk
+      svn up -r $REVISION
+      make clean
+    else
+      "Cloning r$REVISION..."
+      svn co --username anon -r $REVISION svn://servers.simutrans.org/simutrans/trunk
+      cd trunk
+    fi
   fi
 
   # Now inside trunk/
