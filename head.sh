@@ -257,7 +257,7 @@ simutrans_start () {
   fi
 
   # Check for install
-  if [[ ! -d $simutrans_dir ]]; then
+  if [[ ! -e "${simutrans_dir}/sim" ]]; then
     simutrans_install
   fi
 
