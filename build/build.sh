@@ -26,6 +26,8 @@ if [[ ! -e "${install_dir}/sim" ]]; then
       svn co --username anon -r $REVISION svn://servers.simutrans.org/simutrans/trunk
       cd trunk
     fi
+  else
+    cd trunk
   fi
 
   # Now inside trunk/
