@@ -211,20 +211,20 @@ simutrans_load () {
 }
 
 # Build and install
-simutrans_install () {  
+simutrans_install () {
   echo "Building r${revision}..." | log INFO
   echo "Build log in ${log_dir}/build-r${revision}.log" | log DEBUG
   cd build
   ./build.sh $instance $revision > ${log_dir}/build-r${revision}.log 2>&1
   cd ..
 
-  if [[ -d $simutrans_install ]]; then
-    simutrans_reload
+  # Check if install was successful
+  if [[ -e "${simutrans_dir}/sim" ]]; then
+    simutrans_load
   else
-    echo "Running with PID: ${pid}" | log INFO
+    echo "Compilation and installation of revision ${revision} failed" | log ERROR
+    exit 1;
   fi
-
-  simutrans_load
 }
 
 
