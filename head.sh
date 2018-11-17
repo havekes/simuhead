@@ -208,6 +208,9 @@ simutrans_load () {
     mkdir ${simutrans_dir}/save
   fi
   cp -fv ${instance_dir}/save/*.sve ${simutrans_dir}/save/ | log DEBUG
+
+  # Set permissions
+  chown -R ${USER}:${USER} ${simutrans_dir} | log DEBUG
 }
 
 # Build and install
@@ -328,7 +331,7 @@ case $action in
     simutrans_status_code
     ;;
   revision)
-    echo $revision;
+    echo $revision
     ;;
   *)
     echo "Action ${action} does not exist."
