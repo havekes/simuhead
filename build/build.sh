@@ -22,7 +22,7 @@ if [[ ! -e "${install_dir}/sim" ]]; then
       svn up -r $REVISION
       make clean
     else
-      "Cloning r$REVISION..."
+      echo "Cloning r$REVISION..."
       svn co --username anon -r $REVISION svn://servers.simutrans.org/simutrans/trunk
       cd trunk
     fi
@@ -43,18 +43,26 @@ if [[ ! -e "${install_dir}/sim" ]]; then
   echo $REVISION > last_build.revision
 fi
 
-# Copy the game files
-echo "Copying game files..."
-if [[ ! -d $install_dir ]]; then
-  mkdir -p $install_dir
+# If the compilation was successful
+if [[ -e "${install_dir}/sim" ]]; then
+  # Copy the game files
+  echo "Copying game files..."
+  if [[ ! -d $install_dir ]]; then
+    mkdir -p $install_dir
+  fi
+  cp -rf trunk/simutrans/ $install_dir
+  cp -f trunk/build/default/sim $install_dir/simutrans/
+
+  # Downloading language files
+  echo "Running get_lang_files.sh..."
+  cp trunk/get_lang_files.sh $install_dir/
+  cd $install_dir/
+  ./get_lang_files.sh
+
+  echo "Done installing r${REVISION}!"
+
+# The compilation failed
+else
+  echo "Compilation failed for r${REVISION}"
+  echo "Please read the logs for more information and contact the developer"
 fi
-cp -rf trunk/simutrans/ $install_dir
-cp -f trunk/build/default/sim $install_dir/simutrans/
-
-# Downloading language files
-echo "Running get_lang_files.sh..."
-cp trunk/get_lang_files.sh $install_dir/
-cd $install_dir/
-./get_lang_files.sh
-
-echo "Done installing r$REVISION!"
