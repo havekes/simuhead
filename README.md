@@ -36,8 +36,11 @@ See the Reference section for more details on commands options.
 
 - Create a new user to run your simutrans servers
 - Clone this repository in it's home directory
-- 
 - Create an instance with your custom config, simuconf.tab, save(s) and pak(s) (use the example instance for reference)
+- Install required dependencies for compilation. For example, on Ubtunu: 
+```
+# apt-get install subversion build-essential zlib1g-dev libbz2-dev libsdl2-dev
+```
 - Run `./simctl.sh start <instance>`.
 
 ## Reference
@@ -90,3 +93,9 @@ Returns whethers the server process is running or stopped
 Command: `simctl.sh revision [instance]`
 
 Returns which revision the instance is configured to use
+
+## Software depenencies (for compilation)
+
+- Subversion
+- zlib
+- bzip2
