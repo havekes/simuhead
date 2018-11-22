@@ -2,3 +2,4 @@
 *.log
 simutrans/build/r*/
 .idea/
+__pycache__/
