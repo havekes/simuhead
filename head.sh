@@ -67,6 +67,7 @@ do
     v) VERBOSE=true ;;
   esac
 done
+shift $((OPTIND -1))
 
 # Handle arguments
 if [[ $# -eq 1 ]]; then
