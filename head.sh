@@ -37,66 +37,60 @@ log() {
   done
 }
 
-# Parameters parsing
+
+# Basic info functions
 
 usage() {
-  echo "Usage : head.sh {status|start|stop|restart|reload|statuscode|revision} [instance]"
+  echo -e "Usage:
+    head.sh [-v] [version|help] [status|start|stop|restart|reload|statuscode|revision <instance>]
+Options:
+    -v        verbose output"
 }
 
-# getopt options
-SHORT=vhV
-LONG=verbose,help,version
+version() {
+  echo "Simuhead version $VERSION"
+}
 
-# Check if enhanced getopt is available
-getopt --test > /dev/null
-if [[ $? -ne 4 ]]; then
-  echo "ERROR: Enhanced getopt is not available in this environment"
-  exit 1
-fi
 
-# -temporarily store output to be able to check for errors
-# -activate advanced mode getopt quoting e.g. via “--options”
-# -pass arguments only via   -- "$@"   to separate them correctly
-PARSED=$(getopt --options $SHORT --longoptions $LONG --name "$0" -- "$@")
-if [[ $? -ne 0 ]]; then
-  # Then getopt has complained about wrong arguments to stdout
-  exit 1
-fi
-# Use eval with "$PARSED" to properly handle the quoting
-eval set -- "$PARSED"
+# Parameters parsing
 
-# Handle option arguments
-while true; do
-  case "$1" in
-    -v|--verbose)
-      VERBOSE=true
-      shift
-      ;;
-    -h|--help)
-      usage
-      exit 0
-      ;;
-    -V|--version)
-      echo "Simuhead version ${VERSION}"
-      exit 1
-      ;;
-    --)
-      shift
-      break
-      ;;
-    *)
-      echo "ERROR: Internal error"
-      exit 1
-      ;;
+not_enough_params() {
+  echo "ERROR: Not enough parmaters."
+}
+
+# Handle options
+OPTIONS=v
+
+while getopts $OPTIONS opt
+do
+  case $opt in
+    v) VERBOSE=true ;;
   esac
 done
 
-# Handle non-option arguments
-if [[ $# -eq 2 ]]; then
+# Handle arguments
+if [[ $# -eq 1 ]]; then
+  action=$1
+  case $action in
+    help)
+      usage
+      exit 0
+      ;;
+    version)
+      version
+      exit 0
+      ;;
+    *)
+      not_enough_params
+      usage
+      exit 1
+      ;;
+  esac
+elif [[ $# -eq 2 ]]; then
   action=$1
   instance=$2
 else
-  echo -e "ERROR: Not enough parmaters."
+  not_enough_params
   usage
   exit 1
 fi
