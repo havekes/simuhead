@@ -44,7 +44,7 @@ usage() {
 }
 
 # getopt options
-SHORT=vh
+SHORT=vhV
 LONG=verbose,help,version
 
 # Check if enhanced getopt is available
@@ -76,7 +76,7 @@ while true; do
       usage
       exit 0
       ;;
-    --version)
+    -V|--version)
       echo "Simuhead version ${VERSION}"
       exit 1
       ;;
