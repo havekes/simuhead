@@ -1,5 +1,8 @@
 .DS_Store
 *.log
-simutrans/build/r*/
+simutrans/build/r*
 .idea/
 __pycache__/
+
+instances/*
+!instances/example
