@@ -3,8 +3,12 @@
 .idea/
 __pycache__/
 
-log/*
-run/*
 build/*
 !build/build.sh
 !build/config.default
+
+instances/*
+!instances/example
+
+log/*
+run/*
