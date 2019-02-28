@@ -1,5 +1,10 @@
 .DS_Store
-*.log
-simutrans/build/r*/
+
 .idea/
 __pycache__/
+
+log/*
+run/*
+build/*
+!build/build.sh
+!build/config.default
