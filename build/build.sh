@@ -41,10 +41,13 @@ if [[ ! -e "${install_dir}/sim" ]]; then
 
   # Save last revision
   echo $REVISION > last_build.revision
+else
+  # The executable already exists
+  echo "Revision ${REVISION} was already installed"
 fi
 
 # If the compilation was successful
-if [[ -e "${install_dir}/sim" ]]; then
+if [[ -e "trunk/build/default/sim" ]]; then
   # Copy the game files
   echo "Copying game files..."
   if [[ ! -d $install_dir ]]; then
