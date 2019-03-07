@@ -104,7 +104,8 @@ instance_config=${instance_dir}/${instance}.conf
 # Logs
 log_dir=${ROOTDIR}/log/${instance}
 if [[ ! -d $log_dir ]]; then
-  mkdir $log_dir
+  mkdir ${log_dir}
+  chown -R ${USER}:${USER} ${log_dir}
 fi
 LOG_FILE=${log_dir}/head.log
 
