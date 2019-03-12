@@ -43,7 +43,7 @@ if [[ ! -e "${install_dir}/sim" ]]; then
   echo $REVISION > last_build.revision
 else
   # The executable already exists
-  echo "Revision ${REVISION} was already installed"
+  echo "Revision ${REVISION} was already compiled"
 fi
 
 # If the compilation was successful
