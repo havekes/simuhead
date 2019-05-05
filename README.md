@@ -55,12 +55,12 @@ You should now read the *Reference* section for a more in depth look at each ava
 Reference
 ---------
 
-**All commands must be executed as root**
-
 
 ### Start
 
 Command: `head.sh start [instance]`
+
+**Must be executed as root**
 
 Starts the server and loads the last automatically saved game (this happens when a user connects to the server or when the server is stopped properly).
 
@@ -75,6 +75,8 @@ Running `head.sh start [instance]` for a new instance will do the following:
 
 Command: `head.sh stop [instance]`
 
+**Must be executed as root**
+
 Kills the server process.
 The last autosave will be loaded on restart (an autosave is created when a player joins).
 
@@ -82,6 +84,8 @@ The last autosave will be loaded on restart (an autosave is created when a playe
 ### Restart
 
 Command: `head.sh restart [instance]`
+
+**Must be executed as root**
 
 Shortcut for 
 ```
@@ -93,6 +97,8 @@ simctl.sh start [instance]
 ### Reload
 
 Command: `head.sh reload [instance]`
+
+**Must be executed as root**
 
 Builds a new excecutable if the revision changed.
 
@@ -114,6 +120,27 @@ Returns whethers the instance's server process is running or stopped.
 Command: `head.sh revision [instance]`
 
 Returns which revision the instance is using.
+
+
+### Instances
+
+Command: `head.sh instances`
+
+Returns a list of avialable instances
+
+
+### Version
+
+Command: `head.sh version`
+
+Returns simuhead's version
+
+
+### Help
+
+Command: `head.sh help`
+
+Displays a quick usage summary
 
 
 ### `head.conf`: global configuration
