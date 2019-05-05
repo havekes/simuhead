@@ -51,6 +51,21 @@ version() {
   echo "Simuhead version $VERSION"
 }
 
+list_instances() {
+  cd instances/
+  instances=($(ls -d1 */ | sed 's/.$//'))
+  instances_count=$((${#instances[@]} - 1))
+
+  echo "Available instances ($instances_count):"
+
+  for item in ${instances[@]}; do
+    if [[ $item != "example" ]]; then
+      echo "- $item"
+    fi
+  done
+  cd ..
+}
+
 
 # Parameters parsing
 
@@ -79,6 +94,10 @@ if [[ $# -eq 1 ]]; then
       ;;
     version)
       version
+      exit 0
+      ;;
+    instances)
+      list_instances
       exit 0
       ;;
     *)
@@ -226,7 +245,7 @@ simutrans_install () {
   fi
 }
 
-
+# ACTION: status
 simutrans_status () {
   pid=$(process_status)
 
@@ -237,6 +256,7 @@ simutrans_status () {
   fi
 }
 
+# ACTION: statuscode
 simutrans_status_code () {
   pid=$(process_status)
 
@@ -247,6 +267,7 @@ simutrans_status_code () {
   fi
 }
 
+# ACTION: start
 simutrans_start () {
   # Do nothing if already running
   pid=$(process_status)
@@ -274,6 +295,7 @@ simutrans_start () {
   simutrans_status
 }
 
+# ACTION: stop
 simutrans_stop () {
   pid=$(process_status)
   if [[ $pid -gt 1 ]]; then
@@ -285,12 +307,14 @@ simutrans_stop () {
   fi
 }
 
+# ACTION: restart
 simutrans_restart() {
   simutrans_stop
   sleep 1
   simutrans_start
 }
 
+# ACTION: reload
 simutrans_reload() {
   simutrans_stop
 
@@ -305,6 +329,7 @@ simutrans_reload() {
   simutrans_load
   simutrans_start
 }
+
 
 # Action switching
 case $action in
