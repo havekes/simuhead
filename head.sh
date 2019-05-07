@@ -42,7 +42,7 @@ log() {
 
 usage() {
   echo -e "Usage:
-    head.sh [-v] [version|help] [status|start|stop|restart|reload|statuscode|revision <instance>]
+    head.sh [-v] [instances|version|help] [status|start|stop|restart|reload|statuscode|revision <instance>]
 Options:
     -v        verbose output"
 }
@@ -52,18 +52,29 @@ version() {
 }
 
 list_instances() {
-  cd instances/
-  instances=($(ls -d1 */ | sed 's/.$//'))
-  instances_count=$((${#instances[@]} - 1))
+  cd ${ROOTDIR}/instances/
+  instances_list=($(ls -d1 */ | sed 's/.$//'))
+  cd ${ROOTDIR}
 
-  echo "Available instances ($instances_count):"
+  echo "Available instances:"
 
-  for item in ${instances[@]}; do
+  for item in ${instances_list[@]}; do
     if [[ $item != "example" ]]; then
-      echo "- $item"
+      if [[ -f instances/${item}/${item}.conf ]]; then
+        instance_status_code=$(bash ${ROOTDIR}/head.sh statuscode ${item})
+        
+        if (( instance_status_code == 0 )); then
+          instance_status="stopped"
+        elif (( instance_status_code == 1 )); then
+          instance_status="running"
+        else
+          instance_status=$instance_status_code
+        fi
+
+        echo "- $item (${instance_status})"
+      fi
     fi
   done
-  cd ..
 }
 
 
@@ -232,9 +243,9 @@ simutrans_load () {
 simutrans_install () {
   echo "Building r${revision}..." | log INFO
   echo "Build log in ${log_dir}/build-r${revision}.log" | log DEBUG
-  cd build
+  cd ${ROOTDIR}/build
   ./build.sh $instance $revision > ${log_dir}/build-r${revision}.log 2>&1
-  cd ..
+  cd ${ROOTDIR}
 
   # Check if install was successful
   if [[ -e "${simutrans_dir}/sim" ]]; then
