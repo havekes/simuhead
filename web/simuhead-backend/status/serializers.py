@@ -5,4 +5,4 @@ from .models import Instance
 class InstanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Instance
-        fields = ('name', 'port', 'revision', 'lang')
+        fields = '__all__'
