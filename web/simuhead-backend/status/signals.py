@@ -2,7 +2,7 @@ import configparser
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from .models import Instance
-from web.simuhead.simuhead.run import instance_create_dir, instance_config_path, instance_reload
+from simuhead.run import instance_create_dir, instance_config_path, instance_reload
 
 
 @receiver(post_save, sender=Instance)
