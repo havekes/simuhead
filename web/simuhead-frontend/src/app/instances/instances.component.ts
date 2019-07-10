@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ApiService} from '../api.service';
+import {ApiService, Instance} from '../api.service';
 
 @Component({
   selector: 'app-instances',
@@ -7,15 +7,16 @@ import {ApiService} from '../api.service';
   styleUrls: ['./instances.component.sass']
 })
 export class InstancesComponent implements OnInit {
+  instances: Instance[];
 
   constructor(private apiService: ApiService) {
   }
 
-  async ping() {
-    this.apiService.ping()
+  list() {
+    this.apiService.instancesList().subscribe(instances => this.instances = instances);
   }
 
   ngOnInit() {
+    this.list();
   }
-
 }
