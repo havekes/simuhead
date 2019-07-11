@@ -4,14 +4,18 @@ import {NgModule} from '@angular/core';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatButtonModule, MatListModule} from '@angular/material';
-import {InstancesComponent} from './instances/instances.component';
+import {MatButtonModule, MatIconModule, MatListModule, MatToolbarModule} from '@angular/material';
 import {HttpClientModule} from '@angular/common/http';
+import {InstancesComponent} from './instances/instances.component';
+import {SimuheadComponent} from './simuhead/simuhead.component';
+import {NavbarComponent} from './navbar/navbar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    InstancesComponent
+    InstancesComponent,
+    SimuheadComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
@@ -19,11 +23,14 @@ import {HttpClientModule} from '@angular/common/http';
     HttpClientModule,
     BrowserAnimationsModule,
     MatButtonModule,
-    MatListModule
+    MatListModule,
+    MatToolbarModule,
+    MatIconModule,
   ],
   exports: [
     MatButtonModule,
-    MatListModule
+    MatListModule,
+    MatToolbarModule
   ],
   providers: [],
   bootstrap: [AppComponent]

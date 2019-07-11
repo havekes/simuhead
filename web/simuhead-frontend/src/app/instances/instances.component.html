@@ -1,3 +1,31 @@
-<mat-list *ngFor="let instance of instances">
-  <mat-list-item>{{instance.name}}</mat-list-item>
+<mat-list>
+  <mat-list-item class="header">
+    <span class="switch"></span>
+    <span class="name">Instance</span>
+    <span class="revision">Revision</span>
+    <span class="port">Port</span>
+  </mat-list-item>
+</mat-list>
+
+<mat-list *ngFor="let instance of instances; first as first; last as last">
+  <mat-list-item>
+    <span class="switch" [ngSwitch]="instance.statusCode">
+      <button *ngSwitchDefault mat-icon-button aria-label="Start">
+        <mat-icon>play_arrow</mat-icon>
+      </button>
+      <button *ngSwitchCase="1" mat-icon-button aria-label="Stop">
+        <mat-icon>stop</mat-icon>
+      </button>
+    </span>
+    <span class="name">{{instance.name}}</span>
+    <span class="revision">r{{instance.revision}}</span>
+    <span class="port">{{instance.revision}}</span>
+    <span class="fill"></span>
+    <span class="start">
+      <button mat-icon-button aria-label="Configure">
+        <mat-icon>settings</mat-icon>
+      </button>
+    </span>
+  </mat-list-item>
+  <mat-divider *ngIf="!last"></mat-divider>
 </mat-list>

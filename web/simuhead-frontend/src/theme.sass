@@ -1,0 +1,10 @@
+@import ../node_modules/@angular/material/theming
+
+@include mat-core()
+
+$simuhead-app-primary: mat-palette($mat-blue-grey)
+$simuhead-app-accent: mat-palette($mat-red)
+
+$simuhead-app-theme: mat-light-theme($simuhead-app-primary, $simuhead-app-accent)
+
+@include angular-material-theme($simuhead-app-theme)

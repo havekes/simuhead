@@ -12,11 +12,27 @@ export class InstancesComponent implements OnInit {
   constructor(private apiService: ApiService) {
   }
 
+  /*
+    Updates the list of instances
+   */
   list() {
     this.apiService.instancesList().subscribe(instances => this.instances = instances);
   }
 
+  /*
+    Call when manually refreshing to show a visual cue
+   */
+  refresh() {
+    this.instances = [];
+    this.list();
+  }
+
   ngOnInit() {
     this.list();
+
+    // Update the list every 10 seconds
+    setInterval(() => {
+      this.list()
+    }, 10000);
   }
 }
