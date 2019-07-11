@@ -7,9 +7,9 @@
   </mat-list-item>
 </mat-list>
 
-<mat-list *ngFor="let instance of instances; first as first; last as last">
+<mat-list *ngFor="let instance of instances; last as last">
   <mat-list-item>
-    <span class="switch" [ngSwitch]="instance.statusCode">
+    <span [ngSwitch]="instance.statusCode" class="switch" >
       <button *ngSwitchDefault mat-icon-button aria-label="Start">
         <mat-icon>play_arrow</mat-icon>
       </button>
@@ -21,8 +21,8 @@
     <span class="revision">r{{instance.revision}}</span>
     <span class="port">{{instance.revision}}</span>
     <span class="fill"></span>
-    <span class="start">
-      <button mat-icon-button aria-label="Configure">
+    <span class="edit">
+      <button (click)="openEditDialog(instance)" mat-icon-button aria-label="Edit configuratio">
         <mat-icon>settings</mat-icon>
       </button>
     </span>
