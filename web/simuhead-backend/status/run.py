@@ -5,6 +5,8 @@ from pathlib import Path
 
 HEAD_PATH = Path(os.path.abspath(__file__)).parents[3]
 
+# TODO : detect errors and throw exceptions
+
 
 def instances():
     """

@@ -6,7 +6,7 @@ VERSION=1.1.0
 
 # Import configuration
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-source <(grep = ${DIR}/head.conf)
+source <(grep = ${DIR}/head.conf | sed 's/ *= */=/g')
 
 # Log levels : ERROR, WARN, INFO, DEBUG
 log() {
@@ -152,7 +152,7 @@ PREFIX="Simuhead instance: ${instance}"
 
 # Check instance config
 if [[ -f $instance_config ]]; then
-    source $instance_config
+    source <(grep = $instance_config | sed 's/ *= */=/g')
 else
     echo "There is no config file for instance ${instance} in ${instance_config}" | log ERROR
     exit 1
@@ -180,6 +180,7 @@ if [[ -z ${lang:+x} ]]; then
     echo "Please set the lang in the instance's config file: ${instance_config}" | log ERROR
     exit 1
 fi
+
 
 if [[ -z ${debug:+x} ]]; then
     # Debug defaults to 2
