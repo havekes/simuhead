@@ -2,6 +2,7 @@ import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material';
 import {Instance} from '../api.service';
 import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
+import {FormControl, FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'app-instance-edit-dialog',
@@ -10,12 +11,20 @@ import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component
 })
 export class InstanceEditDialogComponent {
 
-  private edited = true;
-
   constructor(public dialogRef: MatDialogRef<InstanceEditDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public instance: Instance,
               private confirmDialog: MatDialog) {
+    this.instanceForm.valueChanges.subscribe(() => {this.edited = true});
   }
+
+  private edited = false;
+
+  instanceForm = new FormGroup({
+    name: new FormControl(this.instance.name),
+    port: new FormControl(this.instance.port),
+    revision: new FormControl(this.instance.revision),
+    lang: new FormControl(this.instance.lang)
+  });
 
   /*
     Check for edits and close the dialog

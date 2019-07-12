@@ -1,6 +1,19 @@
 <h2 mat-dialog-title>{{instance.name}}</h2>
 <mat-dialog-content>
-
+  <form [formGroup]="instanceForm">
+    <mat-form-field>
+      <input matInput formControlName="name" type="text" placeholder="Name">
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput formControlName="port" type="text" placeholder="Port">
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput formControlName="revision" type="text" placeholder="Revision">
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput formControlName="lang" type="text" placeholder="Lang">
+    </mat-form-field>
+  </form>
 </mat-dialog-content>
 <mat-dialog-actions>
   <button (click)="closeConfirm('Are you sure want to discard your changes?')" mat-button>Cancel</button>
