@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class StatusConfig(AppConfig):
-    name = 'status'
+    name = 'instances'
 
     def ready(self):
         print('Ready')
-        import status.signals
+        import instances.signals
