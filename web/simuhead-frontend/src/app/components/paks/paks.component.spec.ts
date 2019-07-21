@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SimuheadComponent } from './simuhead.component';
+import { PaksComponent } from './paks.component';
 
-describe('SimuheadComponent', () => {
-  let component: SimuheadComponent;
-  let fixture: ComponentFixture<SimuheadComponent>;
+describe('PaksComponent', () => {
+  let component: PaksComponent;
+  let fixture: ComponentFixture<PaksComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SimuheadComponent ]
+      declarations: [ PaksComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SimuheadComponent);
+    fixture = TestBed.createComponent(PaksComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

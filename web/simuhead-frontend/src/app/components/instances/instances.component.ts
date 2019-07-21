@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ApiService, Instance} from '../api.service';
+import {ApiService, Instance} from '../../api.service';
 import {MatDialog} from '@angular/material';
 import {InstanceEditDialogComponent} from '../instance-edit-dialog/instance-edit-dialog.component';
 
@@ -34,11 +34,18 @@ export class InstancesComponent implements OnInit {
     Open the instance edit dialog
    */
   openEditDialog(instance) {
-    this.editDialog.open(InstanceEditDialogComponent, {
+    let dialogRef = this.editDialog.open(InstanceEditDialogComponent, {
       width: '400px',
       data: instance,
       disableClose: true,
     });
+    dialogRef.afterClosed().subscribe((instance) => {
+      // TODO: update instances without api call
+    });
+  }
+
+  openCreateDialog() {
+
   }
 
   ngOnInit() {
@@ -47,7 +54,7 @@ export class InstancesComponent implements OnInit {
 
     // Background update the list every 10 seconds
     setInterval(() => {
-      this.list()
+      //this.list()
     }, 10000);
   }
 }

@@ -5,6 +5,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {
+  MAT_DIALOG_DEFAULT_OPTIONS,
   MatButtonModule,
   MatDialogModule, MatFormFieldModule,
   MatIconModule, MatInputModule,
@@ -12,21 +13,23 @@ import {
   MatToolbarModule
 } from '@angular/material';
 import {HttpClientModule} from '@angular/common/http';
-import {InstancesComponent} from './instances/instances.component';
-import {SimuheadComponent} from './simuhead/simuhead.component';
-import {NavbarComponent} from './navbar/navbar.component';
-import {InstanceEditDialogComponent} from './instance-edit-dialog/instance-edit-dialog.component';
-import {ConfirmDialogComponent} from './confirm-dialog/confirm-dialog.component';
+import {InstancesComponent} from './components/instances/instances.component';
+import {NavbarComponent} from './components/navbar/navbar.component';
+import {InstanceEditDialogComponent} from './components/instance-edit-dialog/instance-edit-dialog.component';
+import {ConfirmDialogComponent} from './components/confirm-dialog/confirm-dialog.component';
 import {ReactiveFormsModule} from '@angular/forms';
+import {PaksComponent} from './components/paks/paks.component';
+import {SavesComponent} from './components/saves/saves.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     InstancesComponent,
-    SimuheadComponent,
     NavbarComponent,
     InstanceEditDialogComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    PaksComponent,
+    SavesComponent,
   ],
   entryComponents: [
     InstanceEditDialogComponent,
@@ -46,16 +49,16 @@ import {ReactiveFormsModule} from '@angular/forms';
     MatFormFieldModule,
     MatInputModule,
   ],
-  exports: [
-    MatButtonModule,
-    MatListModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
+  exports: [],
+  providers: [
+    {
+      provide: MAT_DIALOG_DEFAULT_OPTIONS,
+      useValue: {
+        autoFocus: false,
+        hasBackdrop: true,
+      },
+    },
   ],
-  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule {

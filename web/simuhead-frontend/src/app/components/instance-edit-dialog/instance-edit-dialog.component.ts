@@ -1,6 +1,6 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material';
-import {Instance} from '../api.service';
+import {Instance, ApiService} from '../../api.service';
 import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
 import {FormControl, FormGroup} from '@angular/forms';
 
@@ -13,8 +13,11 @@ export class InstanceEditDialogComponent {
 
   constructor(public dialogRef: MatDialogRef<InstanceEditDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public instance: Instance,
-              private confirmDialog: MatDialog) {
-    this.instanceForm.valueChanges.subscribe(() => {this.edited = true});
+              private confirmDialog: MatDialog,
+              private apiService: ApiService) {
+    this.instanceForm.valueChanges.subscribe((event) => {
+      this.edited = true
+    });
   }
 
   private edited = false;
@@ -26,10 +29,10 @@ export class InstanceEditDialogComponent {
     lang: new FormControl(this.instance.lang)
   });
 
-  /*
-    Check for edits and close the dialog
+  /**
+   * Check for edits and close the dialog
    */
-  closeConfirm(prompt) {
+  closeConfirm(prompt: string) {
     if (this.edited) {
       // If the content has been edited, open a confirm dialog before closing
       let confirmDialogRef = this.confirmDialog.open(ConfirmDialogComponent, {
@@ -44,5 +47,21 @@ export class InstanceEditDialogComponent {
       // If not edit has been made, just close the dialog
       this.dialogRef.close();
     }
+  }
+
+  /**
+   * Save values to the API
+   * TODO quick hack, definitely not sure this is the best way to do that
+   */
+  save() {
+    const instance: Instance = {
+      name: this.instanceForm.value.name,
+      port: this.instanceForm.value.port,
+      revision: this.instanceForm.value.revision,
+      lang: this.instanceForm.value.lang,
+    };
+    this.apiService.instanceSave(instance).subscribe();
+    this.dialogRef.close();
+    // TODO: confirm reload before closing
   }
 }
