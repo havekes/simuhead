@@ -5,6 +5,9 @@ class ExternalFile(models.Model):
     name = models.TextField()
     version = models.TextField()
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         abstract = True
 
@@ -25,5 +28,5 @@ class Instance(models.Model):
     revision = models.IntegerField()
     lang = models.CharField(max_length=2)
 
-    pak = models.ForeignKey(Pak, on_delete=models.DO_NOTHING)
-    save = models.ForeignKey(Save, on_delete=models.DO_NOTHING)
+    pak = models.ForeignKey(Pak, on_delete=models.PROTECT, null=True)
+    savegame = models.ForeignKey(Save, on_delete=models.PROTECT, null=True)
