@@ -11,13 +11,15 @@ RESOURCES_DIR = os.path.join(HEAD_DIR, 'resources')
 
 # TODO: detect errors and throw exceptions when possible
 class LocalInstance:
-    def __init__(self, name):
+    def __init__(self, name, base_dir=HEAD_DIR, script='head.sh'):
         """Abstracts control over local instances
         Instances are identified uniquely by their name
 
         :param name: the name of the instance
         """
         self.name = name
+        self._script_dir = base_dir
+        self._script_path = os.path.join(base_dir, script)
         self._path = os.path.join(HEAD_DIR, 'instances', self.name)
         self._config_path = os.path.join(HEAD_DIR, 'instances', self.name, f'{self.name}.conf')
         self._config = None
@@ -68,22 +70,26 @@ class LocalInstance:
 
     def status_code(self):
         """Returns the status code"""
-        subprocess.run([HEAD_PATH, 'i', 'statuscode', self.name], encoding='utf-8')
+        subprocess.run([self._script_path, 'i', 'statuscode', self.name], encoding='utf-8')
 
     def start(self):
         """Starts the server"""
-        subprocess.run([HEAD_PATH, 'i', 'start', self.name], encoding='utf-8')
+        subprocess.run([self._script_path, 'i', 'start', self.name], encoding='utf-8')
 
     def stop(self):
         """Stops the server"""
-        subprocess.run([HEAD_PATH, 'i', 'stop', self.name], encoding='utf-8')
+        subprocess.run([self._script_path, 'i', 'stop', self.name], encoding='utf-8')
 
     def restart(self):
         """Restarts the server"""
-        subprocess.run([HEAD_PATH, 'i', 'restart', self.name], encoding='utf-8')
+        subprocess.run([self._script_path, 'i', 'restart', self.name], encoding='utf-8')
 
     def reload(self):
         """Reloads the configuration for this server.
         This method has to be used in case the pak or save are changed
         """
-        subprocess.run([HEAD_PATH, 'i', 'reload', self.name], encoding='utf-8')
+        subprocess.run([self._script_path, 'i', 'reload', self.name], encoding='utf-8')
+
+
+class LocalInstanceError(Exception):
+    pass
