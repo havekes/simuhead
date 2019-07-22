@@ -1,8 +1,10 @@
 @import ../node_modules/@angular/material/theming
 
-@include mat-core()
+$simuhead-typography: mat-typography-config($font-family: 'Source Sans Pro, sans-serif', $body-1: mat-typography-level(15px, 22px, 400), $button: mat-typography-level(15px, 22px, 400), $input: mat-typography-level(1.1em, 1.1, 400))
 
-$simuhead-app-primary: mat-palette($mat-blue-grey)
+@include mat-core($simuhead-typography)
+
+$simuhead-app-primary: mat-palette($mat-indigo)
 $simuhead-app-accent: mat-palette($mat-red)
 
 $simuhead-app-theme: mat-light-theme($simuhead-app-primary, $simuhead-app-accent)
