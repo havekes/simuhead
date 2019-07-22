@@ -23,8 +23,12 @@ export class ApiService {
     return this.httpClient.get<Instance[]>(this.instancesUrl, httpOptions);
   }
 
-  instanceSave(instance: Instance) {
-    return this.httpClient.put<Instance>(this.instancesUrl + instance, instance, httpOptions);
+  instancePost(newInstance: Instance) {
+    return this.httpClient.post<Instance>(this.instancesUrl, newInstance, httpOptions);
+  }
+
+  instancePut(modifiedInstance: Instance) {
+    return this.httpClient.put<Instance>(modifiedInstance.url, modifiedInstance, httpOptions);
   }
 
   paksList() {
@@ -42,6 +46,7 @@ export interface Instance {
   revision: number;
   lang: string;
   statusCode?: number;
+  url?: string;
 }
 
 interface File {

@@ -1,4 +1,5 @@
-<h2 mat-dialog-title>{{instance.name}}</h2>
+<h2 mat-dialog-title *ngIf="data.new">New instance</h2>
+<h2 mat-dialog-title *ngIf="!data.new">Edit configuration</h2>
 <mat-dialog-content>
   <form [formGroup]="instanceForm">
     <mat-form-field>
@@ -16,6 +17,6 @@
   </form>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button (click)="save()" mat-button>Save</button>
+  <button (click)="save()" mat-button color="primary">Save</button>
   <button (click)="closeConfirm('Are you sure want to discard your changes?')" mat-button>Cancel</button>
 </mat-dialog-actions>

@@ -3,6 +3,7 @@ import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material';
 import {Instance, ApiService} from '../../api.service';
 import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
 import {FormControl, FormGroup} from '@angular/forms';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-instance-edit-dialog',
@@ -12,7 +13,7 @@ import {FormControl, FormGroup} from '@angular/forms';
 export class InstanceEditDialogComponent {
 
   constructor(public dialogRef: MatDialogRef<InstanceEditDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public instance: Instance,
+              @Inject(MAT_DIALOG_DATA) public data: InstanceData,
               private confirmDialog: MatDialog,
               private apiService: ApiService) {
     this.instanceForm.valueChanges.subscribe((event) => {
@@ -23,10 +24,10 @@ export class InstanceEditDialogComponent {
   private edited = false;
 
   instanceForm = new FormGroup({
-    name: new FormControl(this.instance.name),
-    port: new FormControl(this.instance.port),
-    revision: new FormControl(this.instance.revision),
-    lang: new FormControl(this.instance.lang)
+    name: new FormControl(this.data.instance.name),
+    port: new FormControl(this.data.instance.port),
+    revision: new FormControl(this.data.instance.revision),
+    lang: new FormControl(this.data.instance.lang)
   });
 
   /**
@@ -51,17 +52,31 @@ export class InstanceEditDialogComponent {
 
   /**
    * Save values to the API
-   * TODO quick hack, definitely not sure this is the best way to do that
    */
   save() {
-    const instance: Instance = {
-      name: this.instanceForm.value.name,
-      port: this.instanceForm.value.port,
-      revision: this.instanceForm.value.revision,
-      lang: this.instanceForm.value.lang,
-    };
-    this.apiService.instanceSave(instance).subscribe();
-    this.dialogRef.close();
-    // TODO: confirm reload before closing
+    let modifiedInstance = <Instance>this.instanceForm.value;
+    let observableFromApi: Observable<any>;
+
+    if (this.data.new) {
+      observableFromApi = this.apiService.instancePost(modifiedInstance);
+    }
+    else {
+      modifiedInstance.url = this.data.instance.url;
+      observableFromApi = this.apiService.instancePut(modifiedInstance);
+    }
+
+    observableFromApi.subscribe({
+      error: error => {
+        console.log(error);
+      },
+      complete: () => {
+        this.dialogRef.close(modifiedInstance);
+      }
+    });
   }
+}
+
+interface InstanceData {
+  new: boolean;
+  instance: Instance;
 }

@@ -7,7 +7,8 @@
   </mat-list-item>
 </mat-list>
 
-<mat-list *ngFor="let instance of instances; last as last">
+<mat-list *ngFor="let instance of instances; let i = index">
+  <mat-divider></mat-divider>
   <mat-list-item>
     <span [ngSwitch]="instance.statusCode" class="switch" >
       <button *ngSwitchDefault mat-icon-button aria-label="Start">
@@ -22,10 +23,11 @@
     <span class="port">{{instance.revision}}</span>
     <span class="fill"></span>
     <span class="edit">
-      <button (click)="openEditDialog(instance)" mat-icon-button aria-label="Edit configuratio">
+      <button (click)="openEditDialog(i, instance)" mat-icon-button aria-label="Edit configuratio">
         <mat-icon>settings</mat-icon>
       </button>
     </span>
   </mat-list-item>
-  <mat-divider *ngIf="!last"></mat-divider>
 </mat-list>
+
+<button mat-raised-button (click)="openCreateDialog()">Add instance</button>

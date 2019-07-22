@@ -30,22 +30,33 @@ export class InstancesComponent implements OnInit {
     this.list();
   }
 
-  /*
-    Open the instance edit dialog
-   */
-  openEditDialog(instance) {
+  openCreateDialog() {
     let dialogRef = this.editDialog.open(InstanceEditDialogComponent, {
       width: '400px',
-      data: instance,
+      data: {new: true, instance: <Instance>{}},
       disableClose: true,
     });
     dialogRef.afterClosed().subscribe((instance) => {
-      // TODO: update instances without api call
+      if (instance != undefined) {
+        this.instances.push(instance);
+      }
     });
   }
 
-  openCreateDialog() {
-
+  /*
+    Open the instance edit dialog with the data from the selected instance
+   */
+  openEditDialog(i, instance) {
+    let dialogRef = this.editDialog.open(InstanceEditDialogComponent, {
+      width: '400px',
+      data: {new: false, instance: instance},
+      disableClose: true,
+    });
+    dialogRef.afterClosed().subscribe((instance) => {
+      if (instance != undefined) {
+        this.instances[i] = instance;
+      }
+    });
   }
 
   ngOnInit() {
