@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 
-const httpOptions = {
+const httpDefaultOptions = {
   headers: new HttpHeaders({
     'Content-Type': 'application/json'
   }),
@@ -20,27 +20,31 @@ export class ApiService {
   }
 
   instancesList() {
-    return this.httpClient.get<Instance[]>(this.instancesUrl, httpOptions);
+    return this.httpClient.get<Instance[]>(this.instancesUrl, httpDefaultOptions);
   }
   instancePost(instanceData: FormData) {
-    return this.httpClient.post(this.instancesUrl, instanceData, httpOptions);
+    return this.httpClient.post(this.instancesUrl, instanceData, httpDefaultOptions);
   }
   instancePut(url: string, instanceData: FormData) {
-    return this.httpClient.put(url, instanceData, httpOptions);
+    return this.httpClient.put(url, instanceData, httpDefaultOptions);
   }
   instanceDelete(instance: Instance) {
-    return this.httpClient.delete(instance.url, httpOptions);
+    return this.httpClient.delete(instance.url, httpDefaultOptions);
   }
 
   paksList() {
-    return this.httpClient.get<FileInfo[]>(this.paksUrl, httpOptions);
+    return this.httpClient.get<FileInfo[]>(this.paksUrl, httpDefaultOptions);
   }
   pakPost(pakData: FormData) {
-    return this.httpClient.post(this.paksUrl, pakData, httpOptions);
+    // Not a JSON request
+    return this.httpClient.post(this.paksUrl, pakData);
+  }
+  pakDelete(pak: FileInfo) {
+    return this.httpClient.delete(pak.url, httpDefaultOptions);
   }
 
   savesList() {
-    return this.httpClient.get<FileInfo[]>(this.savesUrl, httpOptions);
+    return this.httpClient.get<FileInfo[]>(this.savesUrl, httpDefaultOptions);
   }
 }
 

@@ -20,7 +20,7 @@ import {ConfirmDialogComponent} from './components/confirm-dialog/confirm-dialog
 import {ReactiveFormsModule} from '@angular/forms';
 import {PaksComponent} from './components/paks/paks.component';
 import {SavesComponent} from './components/saves/saves.component';
-import { FileEditDialogComponent } from './components/file-edit-dialog/file-edit-dialog.component';
+import {FileEditDialogComponent} from './components/file-edit-dialog/file-edit-dialog.component';
 
 @NgModule({
   declarations: [
@@ -31,10 +31,11 @@ import { FileEditDialogComponent } from './components/file-edit-dialog/file-edit
     ConfirmDialogComponent,
     PaksComponent,
     SavesComponent,
-    FileEditDialogComponent,
+    FileEditDialogComponent
   ],
   entryComponents: [
     InstanceEditDialogComponent,
+    FileEditDialogComponent,
     ConfirmDialogComponent,
   ],
   imports: [

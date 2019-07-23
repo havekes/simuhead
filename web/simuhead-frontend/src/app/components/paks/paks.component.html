@@ -1,8 +1,22 @@
-<mat-list *ngFor="let pak of paks; last as last">
-  <mat-list-item>
-    <span>{{pak.name}}</span>
+<mat-list>
+  <mat-list-item class="header">
+    <span class="name">Pak name</span>
+    <span class="version">Version</span>
   </mat-list-item>
+</mat-list>
+
+<mat-list *ngFor="let pak of paks; index as i">
   <mat-divider *ngIf="!last"></mat-divider>
+  <mat-list-item>
+    <span class="name">{{pak.name}}</span>
+    <span class="version">{{pak.version}}</span>
+    <span class="fill"></span>
+    <span class="edit">
+      <button (click)="deleteConfirmDialog(i, 'Are you sure you want to delete this Pak?')" mat-icon-button aria-label="Delete pak">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </span>
+  </mat-list-item>
 </mat-list>
 
 <button (click)="openCreateDialog()" mat-raised-button>

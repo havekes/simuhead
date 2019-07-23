@@ -3,13 +3,13 @@ from .models import Pak, Save, Instance
 from .local import LocalInstance
 
 
-class PakSerializer(serializers.ModelSerializer):
+class PakSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Pak
         fields = '__all__'
 
 
-class SaveSerializer(serializers.ModelSerializer):
+class SaveSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Save
         fields = '__all__'
