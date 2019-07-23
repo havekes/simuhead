@@ -12,23 +12,22 @@ import {Observable} from 'rxjs';
 })
 export class InstanceEditDialogComponent {
 
-  constructor(public dialogRef: MatDialogRef<InstanceEditDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: InstanceData,
-              private confirmDialog: MatDialog,
-              private apiService: ApiService) {
-    this.instanceForm.valueChanges.subscribe((event) => {
-      this.edited = true
-    });
-  }
-
   private edited = false;
-
-  instanceForm = new FormGroup({
+  private instanceForm = new FormGroup({
     name: new FormControl(this.data.instance.name),
     port: new FormControl(this.data.instance.port),
     revision: new FormControl(this.data.instance.revision),
     lang: new FormControl(this.data.instance.lang)
   });
+
+  constructor(public dialogRef: MatDialogRef<InstanceEditDialogComponent>,
+              @Inject(MAT_DIALOG_DATA) public data: InstanceData,
+              private confirmDialog: MatDialog,
+              private apiService: ApiService) {
+    this.instanceForm.valueChanges.subscribe(() => {
+      this.edited = true;
+    });
+  }
 
   /**
    * Check for edits and close the dialog
@@ -58,16 +57,15 @@ export class InstanceEditDialogComponent {
     let observableFromApi: Observable<any>;
 
     if (this.data.new) {
-      observableFromApi = this.apiService.instancePost(modifiedInstance);
+      observableFromApi = this.apiService.instancePost(this.instanceForm.value);
     }
     else {
-      modifiedInstance.url = this.data.instance.url;
-      observableFromApi = this.apiService.instancePut(modifiedInstance);
+      observableFromApi = this.apiService.instancePut(this.data.instance.url, this.instanceForm.value);
     }
 
     observableFromApi.subscribe({
-      error: error => {
-        console.log(error);
+      error: err => {
+        console.log(err);
       },
       complete: () => {
         this.dialogRef.close(modifiedInstance);

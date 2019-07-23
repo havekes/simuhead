@@ -1,9 +1,10 @@
-<button mat-raised-button aria-label="Add">
-  <mat-icon>add</mat-icon> Add Pak
-</button>
 <mat-list *ngFor="let pak of paks; last as last">
   <mat-list-item>
     <span>{{pak.name}}</span>
   </mat-list-item>
   <mat-divider *ngIf="!last"></mat-divider>
 </mat-list>
+
+<button (click)="openCreateDialog()" mat-raised-button>
+  <mat-icon>add</mat-icon> Add Pak
+</button>

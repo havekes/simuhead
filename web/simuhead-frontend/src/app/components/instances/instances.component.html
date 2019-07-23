@@ -23,11 +23,16 @@
     <span class="port">{{instance.revision}}</span>
     <span class="fill"></span>
     <span class="edit">
-      <button (click)="openEditDialog(i, instance)" mat-icon-button aria-label="Edit configuratio">
+      <button (click)="openEditDialog(i, instance)" mat-icon-button aria-label="Edit configuration">
         <mat-icon>settings</mat-icon>
+      </button>
+      <button (click)="deleteConfirmDialog(i, 'Are you sure you want to remove this instance?')" mat-icon-button aria-label="Remove instance">
+        <mat-icon>delete</mat-icon>
       </button>
     </span>
   </mat-list-item>
 </mat-list>
 
-<button mat-raised-button (click)="openCreateDialog()">Add instance</button>
+<button (click)="openCreateDialog()" mat-raised-button>
+  <mat-icon>add</mat-icon> Add instance
+</button>

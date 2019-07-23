@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ApiService, Instance} from '../../api.service';
 import {MatDialog} from '@angular/material';
 import {InstanceEditDialogComponent} from '../instance-edit-dialog/instance-edit-dialog.component';
+import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-instances',
@@ -9,10 +10,12 @@ import {InstanceEditDialogComponent} from '../instance-edit-dialog/instance-edit
   styleUrls: ['./instances.component.sass']
 })
 export class InstancesComponent implements OnInit {
+
   instances: Instance[];
 
   constructor(private apiService: ApiService,
-              private editDialog: MatDialog) {
+              private editDialog: MatDialog,
+              private confirmDialog: MatDialog) {
   }
 
   /*
@@ -59,13 +62,32 @@ export class InstancesComponent implements OnInit {
     });
   }
 
+  deleteConfirmDialog(i, promt) {
+    let confirmDialogRef = this.confirmDialog.open(ConfirmDialogComponent, {
+      data: promt
+    });
+    confirmDialogRef.afterClosed().subscribe((answer) => {
+      if (answer) {
+        this.apiService.instanceDelete(this.instances[i]).subscribe({
+          error: err => {
+            console.log(err);
+          },
+          complete: () => {
+            this.list();
+            confirmDialogRef.close();
+          }
+        });
+      }
+    });
+  }
+
   ngOnInit() {
     // Initialize the list
     this.list();
 
     // Background update the list every 10 seconds
     setInterval(() => {
-      //this.list()
+      this.list();
     }, 10000);
   }
 }

@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {ApiService, Pak} from '../../api.service';
+import {ApiService, FileInfo} from '../../api.service';
+import {MatDialog} from '@angular/material';
+import {FileEditDialogComponent} from '../file-edit-dialog/file-edit-dialog.component';
 
 @Component({
   selector: 'app-paks',
@@ -8,13 +10,22 @@ import {ApiService, Pak} from '../../api.service';
 })
 export class PaksComponent implements OnInit {
 
-  paks: Pak[];
+  paks: FileInfo[];
 
-  constructor(private apiService: ApiService) {
+  constructor(private apiService: ApiService,
+              private editDialog: MatDialog,
+              private confirmDialog: MatDialog) {
   }
 
   private list() {
     this.apiService.paksList().subscribe(paks => this.paks = paks);
+  }
+
+  openCreateDialog() {
+    let createDialogRef = this.editDialog.open(FileEditDialogComponent, {
+      width: '400px',
+      disableClose: true,
+    });
   }
 
   ngOnInit() {

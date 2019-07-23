@@ -22,21 +22,25 @@ export class ApiService {
   instancesList() {
     return this.httpClient.get<Instance[]>(this.instancesUrl, httpOptions);
   }
-
-  instancePost(newInstance: Instance) {
-    return this.httpClient.post<Instance>(this.instancesUrl, newInstance, httpOptions);
+  instancePost(instanceData: FormData) {
+    return this.httpClient.post(this.instancesUrl, instanceData, httpOptions);
   }
-
-  instancePut(modifiedInstance: Instance) {
-    return this.httpClient.put<Instance>(modifiedInstance.url, modifiedInstance, httpOptions);
+  instancePut(url: string, instanceData: FormData) {
+    return this.httpClient.put(url, instanceData, httpOptions);
+  }
+  instanceDelete(instance: Instance) {
+    return this.httpClient.delete(instance.url, httpOptions);
   }
 
   paksList() {
-    return this.httpClient.get<Pak[]>(this.paksUrl, httpOptions);
+    return this.httpClient.get<FileInfo[]>(this.paksUrl, httpOptions);
+  }
+  pakPost(pakData: FormData) {
+    return this.httpClient.post(this.paksUrl, pakData, httpOptions);
   }
 
   savesList() {
-    return this.httpClient.get<Save[]>(this.savesUrl, httpOptions);
+    return this.httpClient.get<FileInfo[]>(this.savesUrl, httpOptions);
   }
 }
 
@@ -49,11 +53,9 @@ export interface Instance {
   url?: string;
 }
 
-interface File {
+export interface FileInfo {
   name: string;
   version: string;
-  url: string;
+  file?: File;
+  url?: string;
 }
-
-export interface Pak extends File {}
-export interface Save extends File {}
