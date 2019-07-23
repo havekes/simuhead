@@ -12,6 +12,8 @@ instances/*
 log/*
 run/*
 
+resources/*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

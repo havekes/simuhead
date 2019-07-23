@@ -7,7 +7,7 @@
   </mat-list-item>
 </mat-list>
 
-<mat-list *ngFor="let instance of instances; let i = index">
+<mat-list *ngFor="let instance of instances; index as i">
   <mat-divider></mat-divider>
   <mat-list-item>
     <span [ngSwitch]="instance.statusCode" class="switch" >
@@ -26,7 +26,7 @@
       <button (click)="openEditDialog(i, instance)" mat-icon-button aria-label="Edit configuration">
         <mat-icon>settings</mat-icon>
       </button>
-      <button (click)="deleteConfirmDialog(i, 'Are you sure you want to remove this instance?')" mat-icon-button aria-label="Remove instance">
+      <button (click)="deleteConfirmDialog(i, 'Are you sure you want to delete this instance?')" mat-icon-button aria-label="Delete instance">
         <mat-icon>delete</mat-icon>
       </button>
     </span>
