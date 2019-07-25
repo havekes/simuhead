@@ -9,7 +9,7 @@ import {
   MatButtonModule,
   MatDialogModule, MatFormFieldModule,
   MatIconModule, MatInputModule,
-  MatListModule,
+  MatListModule, MatSnackBarModule,
   MatToolbarModule
 } from '@angular/material';
 import {HttpClientModule} from '@angular/common/http';
@@ -51,6 +51,7 @@ import {FileEditDialogComponent} from './components/file-edit-dialog/file-edit-d
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
+    MatSnackBarModule,
   ],
   exports: [],
   providers: [
