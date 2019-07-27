@@ -130,3 +130,24 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = 'resources'
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'instances.views.custom_exception_handler'
+}
+
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'build': {
+#             'level': 'INFO',
+#             'class': 'logging.FileHandler',
+#             'filename': os.path.join(BASE_DIR, 'logs', 'build.log')
+#         },
+#         'instance': {
+#             'level': 'INFO',
+#             'class': 'logging.FileHandler',
+#             'filename': os.path.join(BASE_DIR, 'logs', 'instance.log')
+#         }
+#     }
+# }
