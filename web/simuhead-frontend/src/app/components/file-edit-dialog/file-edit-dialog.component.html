@@ -4,13 +4,15 @@
     <mat-form-field>
       <input matInput formControlName="name" type="text" placeholder="Name">
     </mat-form-field>
+    <br>
     <mat-form-field>
       <input matInput formControlName="version" type="text" placeholder="Version">
     </mat-form-field>
+    <br>
     <input (change)="onFileChange($event.target.files)" type="file">
   </form>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button (click)="save()" mat-button color="primary">Save</button>
+  <button (click)="save()" [disabled]="!isValid()" mat-button color="primary">Save</button>
   <button (click)="closeConfirm('Are you sure want to discard your changes?')" mat-button>Cancel</button>
 </mat-dialog-actions>

@@ -1,8 +1,13 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material';
-import {FormControl, FormGroup} from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ApiService, FileInfo} from '../../api.service';
 import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
+
+export interface FileData {
+  title: string;
+  file: FileInfo;
+}
 
 @Component({
   selector: 'app-file-edit-dialog',
@@ -13,8 +18,14 @@ export class FileEditDialogComponent {
 
   private edited = false;
   private fileForm = new FormGroup({
-    name: new FormControl(this.data.file.name),
-    version: new FormControl(this.data.file.version),
+    name: new FormControl(this.data.file.name, [
+      Validators.required,
+      Validators.pattern('[a-zA-Z0-9\-_]+')
+    ]),
+    version: new FormControl(this.data.file.version, [
+      Validators.required,
+      Validators.pattern('[0-9](\.[0-9]+){0,2}[a-z]?')
+    ]),
   });
   private file: File;
 
@@ -24,12 +35,15 @@ export class FileEditDialogComponent {
               private apiService: ApiService) {
     this.fileForm.valueChanges.subscribe(() => {
       this.edited = true;
-      console.log(this.fileForm);
     });
   }
 
   onFileChange(files: FileList) {
     this.file = files[0];
+  }
+
+  isValid() {
+    return this.file != undefined && this.fileForm.valid;
   }
 
   /**
@@ -53,26 +67,11 @@ export class FileEditDialogComponent {
   }
 
   save() {
-    if (this.data.new) {
-      let fileData = new FormData();
-      fileData.append('name', this.fileForm.value.name);
-      fileData.append('version', this.fileForm.value.version);
-      fileData.append('file', this.file);
+    let fileData = new FormData();
+    fileData.append('name', this.fileForm.value.name);
+    fileData.append('version', this.fileForm.value.version);
+    fileData.append('file', this.file);
 
-      // TODO: choose between pak and save
-      this.apiService.pakPost(fileData).subscribe({
-        error: err => {
-          console.log(err);
-        },
-        complete: () => {
-          this.dialogRef.close(fileData);
-        }
-      });
-    }
+    this.dialogRef.close(fileData);
   }
-}
-
-interface FileData {
-  file: FileInfo;
-  new?: boolean;
 }
