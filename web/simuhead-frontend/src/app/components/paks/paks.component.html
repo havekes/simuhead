@@ -1,24 +1,27 @@
 <mat-list>
   <mat-list-item class="header">
-    <span class="name">Pak name</span>
+    <span class="name">Pak</span>
     <span class="version">Version</span>
+    <span class="file">File</span>
+    <mat-divider></mat-divider>
   </mat-list-item>
-</mat-list>
-
-<mat-list *ngFor="let pak of paks; index as i">
-  <mat-divider *ngIf="!last"></mat-divider>
-  <mat-list-item>
+  <mat-list-item *ngFor="let pak of paks; index as i;">
     <span class="name">{{pak.name}}</span>
     <span class="version">{{pak.version}}</span>
+    <span class="file"><a mat-button href="{{pak.file}}">Download</a></span>
     <span class="fill"></span>
     <span class="edit">
-      <button (click)="deleteConfirmDialog(i, 'Are you sure you want to delete this Pak?')" mat-icon-button aria-label="Delete pak">
+      <button
+        (click)="deleteConfirmDialog(i, 'Do you want to delete the following pak: ' + pak.name + '-' + pak.version)"
+        mat-icon-button aria-label="Delete pak" [disabled]="pak.protected">
         <mat-icon>delete</mat-icon>
       </button>
     </span>
+    <mat-divider></mat-divider>
   </mat-list-item>
 </mat-list>
 
-<button (click)="openCreateDialog()" mat-raised-button>
-  <mat-icon>add</mat-icon> Add Pak
+<button (click)="openCreateDialog('Upload new pak')" mat-button class="add-button">
+  <mat-icon>add</mat-icon>
+  Add Pak
 </button>

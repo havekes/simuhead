@@ -1,1 +1,27 @@
-<p>saves works!</p>
+<mat-list>
+  <mat-list-item class="header">
+    <span class="name">Save</span>
+    <span class="version">Version</span>
+    <span class="file">File</span>
+    <mat-divider></mat-divider>
+  </mat-list-item>
+  <mat-list-item *ngFor="let save of saves; index as i">
+    <span class="name">{{save.name}}</span>
+    <span class="version">{{save.version}}</span>
+    <span class="file"><a mat-button href="{{save.file}}">Download</a></span>
+    <span class="fill"></span>
+    <span class="edit">
+      <button
+        (click)="deleteConfirmDialog(i, 'Do you want to delete the following save: ' + save.name + '-' + save.version)"
+        mat-icon-button aria-label="Delete pak" [disabled]="save.protected">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </span>
+    <mat-divider></mat-divider>
+  </mat-list-item>
+</mat-list>
+
+<button (click)="openCreateDialog('Upload new save')" mat-button class="add-button">
+  <mat-icon>add</mat-icon>
+  Add Save
+</button>
