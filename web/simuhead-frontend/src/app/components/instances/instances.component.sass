@@ -1,15 +1,39 @@
 mat-list-item.header
   font-weight: bold
 
+mat-list-item.header .pak,
+mat-list-item.header .save
+  padding-left: 16px
+  margin-right: -16px
+
 mat-list-item .switch
-  width: 4em
+  min-width: 4em
 
 mat-list-item .name
-  width: 15em
+  min-width: 8em
+  flex: 2
 
+mat-list-item .port,
 mat-list-item .revision,
-mat-list-item .port
-  width: 10em
+mat-list-item .lang,
+mat-list-item .pak,
+mat-list-item .save
+  min-width: 8em
+  flex: 1
+
+mat-list-item .debug
+  min-width: 6em
 
 mat-list-item .fill
-  flex: 1 1 auto
+  flex: 4 1 auto
+
+
+mat-list-item .actions
+  min-width: 5em
+
+mat-icon
+  font-size: 20px
+
+.add-button
+  display: block
+  margin: .5em auto

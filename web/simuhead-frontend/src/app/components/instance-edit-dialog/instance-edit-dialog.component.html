@@ -1,5 +1,5 @@
-<h2 mat-dialog-title *ngIf="data.new">New instance</h2>
-<h2 mat-dialog-title *ngIf="!data.new">Edit configuration</h2>
+<h2 mat-dialog-title *ngIf="instance.name == undefined">Create new instance</h2>
+<h2 mat-dialog-title *ngIf="instance.name != undefined">Edit insatnce configuration</h2>
 <mat-dialog-content>
   <form [formGroup]="instanceForm">
     <mat-form-field>
@@ -15,8 +15,37 @@
     </mat-form-field>
     <br>
     <mat-form-field>
-      <input matInput formControlName="lang" type="text" placeholder="Lang">
+      <input matInput formControlName="lang" type="text" placeholder="Language">
     </mat-form-field>
+    <br>
+    <mat-form-field>
+      <mat-label>Debug level</mat-label>
+      <mat-select formControlName="debug">
+        <mat-option [value]="1">1</mat-option>
+        <mat-option [value]="2">2</mat-option>
+        <mat-option [value]="3">3</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <mat-label>Pak</mat-label>
+      <mat-select formControlName="pak">
+        <mat-option *ngFor="let pak of paks" [value]="pak.url">{{pak.name}}-{{pak.version}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button (click)="createPakDialog('Upload new pak')" mat-icon-button aria-label="Add pak">
+      <mat-icon>add</mat-icon>
+    </button>
+    <br>
+    <mat-form-field>
+      <mat-label>Save</mat-label>
+      <mat-select formControlName="savegame">
+        <mat-option *ngFor="let save of saves" [value]="save.url">{{save.name}}-{{save.version}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button (click)="createSaveDialog('Upload new save')" mat-icon-button aria-label="Add save">
+      <mat-icon>add</mat-icon>
+    </button>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions>

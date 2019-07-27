@@ -6,10 +6,10 @@ import {AppComponent} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {
   MAT_DIALOG_DEFAULT_OPTIONS,
-  MatButtonModule,
+  MatButtonModule, MatCheckboxModule,
   MatDialogModule, MatFormFieldModule,
   MatIconModule, MatInputModule,
-  MatListModule, MatSnackBarModule,
+  MatListModule, MatProgressSpinnerModule, MatSelectModule, MatSnackBarModule,
   MatToolbarModule
 } from '@angular/material';
 import {HttpClientModule} from '@angular/common/http';
@@ -31,7 +31,7 @@ import {FileEditDialogComponent} from './components/file-edit-dialog/file-edit-d
     ConfirmDialogComponent,
     PaksComponent,
     SavesComponent,
-    FileEditDialogComponent
+    FileEditDialogComponent,
   ],
   entryComponents: [
     InstanceEditDialogComponent,
@@ -52,6 +52,9 @@ import {FileEditDialogComponent} from './components/file-edit-dialog/file-edit-d
     MatFormFieldModule,
     MatInputModule,
     MatSnackBarModule,
+    MatCheckboxModule,
+    MatSelectModule,
+    MatProgressSpinnerModule,
   ],
   exports: [],
   providers: [

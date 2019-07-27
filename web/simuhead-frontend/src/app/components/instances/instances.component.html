@@ -2,37 +2,55 @@
   <mat-list-item class="header">
     <span class="switch"></span>
     <span class="name">Instance</span>
-    <span class="revision">Revision</span>
     <span class="port">Port</span>
+    <span class="revision">Revision</span>
+    <span class="lang">Language</span>
+    <span class="debug">Debug</span>
+    <span class="pak">Pak</span>
+    <span class="save">Save</span>
+    <span class="fill"></span>
+    <span class="actions"></span>
+    <mat-divider></mat-divider>
   </mat-list-item>
-</mat-list>
-
-<mat-list *ngFor="let instance of instances; index as i">
-  <mat-divider></mat-divider>
-  <mat-list-item>
-    <span [ngSwitch]="instance.statusCode" class="switch" >
-      <button *ngSwitchDefault mat-icon-button aria-label="Start">
+  <mat-list-item *ngFor="let instance of instances; index as i">
+    <span [ngSwitch]="instance.status" class="switch">
+      <mat-spinner *ngSwitchCase="InstanceStatusCode.WORKING" diameter="20"></mat-spinner>
+      <button *ngSwitchCase="InstanceStatusCode.RUNNING" mat-icon-button aria-label="Stop">
+        <mat-icon>pause</mat-icon>
+      </button>
+      <button (click)="start(i)" *ngSwitchCase="InstanceStatusCode.INSTALLED" mat-icon-button aria-label="Start">
         <mat-icon>play_arrow</mat-icon>
       </button>
-      <button *ngSwitchCase="1" mat-icon-button aria-label="Stop">
-        <mat-icon>stop</mat-icon>
+      <button (click)="install(i)" *ngSwitchCase="InstanceStatusCode.CONFIGURED" mat-icon-button aria-label="Install">
+        <mat-icon>build</mat-icon>
       </button>
     </span>
     <span class="name">{{instance.name}}</span>
+    <span class="port">{{instance.port}}</span>
     <span class="revision">r{{instance.revision}}</span>
-    <span class="port">{{instance.revision}}</span>
+    <span class="lang">{{instance.lang}}</span>
+    <span class="debug">{{instance.debug}}</span>
+    <span class="pak">
+      <a mat-button href="{{instance.pak.file}}">{{instance.pak.name}}-{{instance.pak.version}}</a>
+    </span>
+    <span class="save">
+      <a mat-button href="{{instance.savegame.file}}">{{instance.savegame.name}}-{{instance.savegame.version}}</a>
+    </span>
     <span class="fill"></span>
-    <span class="edit">
-      <button (click)="openEditDialog(i, instance)" mat-icon-button aria-label="Edit configuration">
+    <span class="actions">
+      <button (click)="openEditDialog(i)" mat-icon-button aria-label="Edit configuration">
         <mat-icon>settings</mat-icon>
       </button>
-      <button (click)="deleteConfirmDialog(i, 'Are you sure you want to delete this instance?')" mat-icon-button aria-label="Delete instance">
+      <button (click)="deleteConfirmDialog(i, 'Are you sure you want to delete this instance?')" mat-icon-button
+              aria-label="Delete instance">
         <mat-icon>delete</mat-icon>
       </button>
     </span>
+    <mat-divider></mat-divider>
   </mat-list-item>
 </mat-list>
 
-<button (click)="openCreateDialog()" mat-raised-button>
-  <mat-icon>add</mat-icon> Add instance
+<button (click)="openCreateDialog()" mat-button class="add-button">
+  <mat-icon>add</mat-icon>
+  Add instance
 </button>
