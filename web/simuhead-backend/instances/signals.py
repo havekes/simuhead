@@ -2,7 +2,7 @@ import os
 from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete
 from .models import Instance, Pak, Save
-from .local import LocalInstance, LocalInstanceBuildError
+from .local import LocalInstance, LocalInstanceError
 
 
 @receiver(post_save, sender=Instance)
@@ -15,7 +15,7 @@ def on_instance_save(instance, **kwargs):
             local_instance.reload()
         else:
             local_instance.install()
-    except LocalInstanceBuildError:
+    except LocalInstanceError:
         pass
 
 
