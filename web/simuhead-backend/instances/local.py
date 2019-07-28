@@ -1,7 +1,6 @@
 import os
 import shutil
 import zipfile
-import logging
 import configparser
 from subprocess import Popen, PIPE
 from django.conf import settings
@@ -10,9 +9,6 @@ RESOURCES_DIR = os.path.join(settings.BASE_DIR, settings.MEDIA_ROOT)
 BUILD_PATH = os.path.join(RESOURCES_DIR, 'build', 'build.sh')
 
 POPEN_OPTIONS = {'encoding': 'utf-8', 'stdout': PIPE, 'stderr': PIPE}
-
-
-# logger = logging.getLogger(__name__)
 
 
 # TODO: detect errors and throw exceptions when possible
