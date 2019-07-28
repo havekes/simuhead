@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from .models import Pak, Save, Instance
+from .models import Pak, Save, Revision, Instance
 from .local import LocalInstance, LocalInstanceError
 
 
-class FileSerializer(serializers.HyperlinkedModelSerializer):
+class ProtectedSerializer(serializers.HyperlinkedModelSerializer):
     protected = serializers.SerializerMethodField()
 
     def get_protected(self, instance):
@@ -13,7 +13,7 @@ class FileSerializer(serializers.HyperlinkedModelSerializer):
             return False
 
 
-class PakSerializer(FileSerializer):
+class PakSerializer(ProtectedSerializer):
     id = serializers.IntegerField(read_only=True)
 
     class Meta:
@@ -21,11 +21,17 @@ class PakSerializer(FileSerializer):
         fields = '__all__'
 
 
-class SaveSerializer(FileSerializer):
+class SaveSerializer(ProtectedSerializer):
     id = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Save
+        fields = '__all__'
+
+
+class RevisionSerializer(ProtectedSerializer):
+    class Meta:
+        model = Revision
         fields = '__all__'
 
 

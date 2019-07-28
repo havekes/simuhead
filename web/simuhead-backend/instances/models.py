@@ -29,13 +29,19 @@ class Save(ExternalFile):
     file = models.FileField(upload_to=save_file_path)
 
 
+class Revision(models.Model):
+    r = models.IntegerField()
+    alias = models.TextField()
+    compiled = models.BooleanField(default=False)
+
+
 class Instance(models.Model):
     name = models.TextField(unique=True)
 
     # Instance configuration
-    port = models.IntegerField()
-    revision = models.IntegerField()
-    lang = models.CharField(max_length=2)
+    port = models.IntegerField(default=13353, unique=True)
+    revision = models.ForeignKey(Revision, on_delete=models.PROTECT, null=True)
+    lang = models.CharField(max_length=2, default='en')
     debug = models.IntegerField(default=2, validators=[MinValueValidator(1), MaxValueValidator(3)])
 
     pak = models.ForeignKey(Pak, on_delete=models.PROTECT, null=True)

@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from rest_framework.views import exception_handler
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.status import HTTP_500_INTERNAL_SERVER_ERROR
-from .serializers import PakSerializer, SaveSerializer, InstanceSerializer
-from .models import Pak, Save, Instance
+from .serializers import PakSerializer, SaveSerializer, RevisionSerializer, InstanceSerializer
+from .models import Pak, Save, Revision, Instance
 from .local import LocalInstance, LocalInstanceError
 
 
@@ -16,6 +16,11 @@ class PakViewSet(viewsets.ModelViewSet):
 class SaveViewSet(viewsets.ModelViewSet):
     serializer_class = SaveSerializer
     queryset = Save.objects.all()
+
+
+class RevisionViewSet(viewsets.ModelViewSet):
+    serializer_class = RevisionSerializer
+    queryset = Revision.objects.all()
 
 
 class InstanceViewSet(viewsets.ModelViewSet):

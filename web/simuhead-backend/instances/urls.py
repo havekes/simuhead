@@ -1,10 +1,11 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
-from .views import PakViewSet, SaveViewSet, InstanceViewSet, InstanceStartView, InstanceInstallView
+from .views import PakViewSet, SaveViewSet, RevisionViewSet, InstanceViewSet, InstanceStartView, InstanceInstallView
 
 router = DefaultRouter()
 router.register('paks', PakViewSet, basename='pak')
 router.register('saves', SaveViewSet, basename='save')
+router.register('revisions', RevisionViewSet, basename='revision')
 router.register('instances', InstanceViewSet, basename='instance')
 urlpatterns = router.urls
 
