@@ -6,12 +6,12 @@ from subprocess import Popen, PIPE
 from django.conf import settings
 
 RESOURCES_DIR = os.path.join(settings.BASE_DIR, settings.MEDIA_ROOT)
-BUILD_PATH = os.path.join(RESOURCES_DIR, 'build', 'build.sh')
-
+BUILD_SCRIPT = os.path.join(RESOURCES_DIR, 'build', 'build.sh')
 POPEN_OPTIONS = {'encoding': 'utf-8', 'stdout': PIPE, 'stderr': PIPE}
 
 
-# TODO: detect errors and throw exceptions when possible
+# TODO: improve comments
+# TODO: detect errors and throw exceptions when possible, better error handling overall
 class LocalInstance:
     def __init__(self, name, base_dir=RESOURCES_DIR, script='head.sh'):
         """Abstracts control over local instances
@@ -20,20 +20,20 @@ class LocalInstance:
         :param name: the name of the instance
         """
         self.name = name
-        self._script_dir = base_dir
-        self._script_path = os.path.join(base_dir, script)
-        self._instance_path = os.path.join(RESOURCES_DIR, 'instances', self.name)
+        self._instance_dir = os.path.join(RESOURCES_DIR, 'instances', self.name)
+        # TODO: remove config since it is obsolete
         self._config_path = os.path.join(RESOURCES_DIR, 'instances', self.name, f'{self.name}.ini')
         self._config = None
 
     def _create_directory(self):
         """Creates the directory structure for the instance if it doesn't exist"""
-        if not os.path.exists(self.path):
-            os.makedirs(self.path)
+        if not os.path.exists(self.dir):
+            os.makedirs(self.dir)
 
     @property
-    def path(self):
-        return self._instance_path
+    def dir(self):
+        """Path to the instance directory"""
+        return self._instance_dir
 
     @property
     def config_path(self):
@@ -41,10 +41,12 @@ class LocalInstance:
 
     @property
     def server_dir(self):
+        """Path to the instance's server directory"""
         return os.path.join(RESOURCES_DIR, 'instances', self.name, self.revision, 'simutrans')
 
     @property
-    def server_path(self):
+    def server_exec(self):
+        """Path to the instance's server executable"""
         return os.path.join(self.server_dir, 'sim')
 
     @property
@@ -104,22 +106,27 @@ class LocalInstance:
 
     @property
     def pak_name(self):
+        """Pak file name"""
         return self.pak.rsplit('/', 1)[-1]
 
     @property
     def pak_dir(self):
+        """Path to the installed pak directory"""
         return os.path.join(self.server_dir, self.pak_name.rsplit('.', 1)[0])
 
     @property
     def savegame_name(self):
+        """Save file name"""
         return self.savegame.rsplit('/', 1)[-1]
 
     @property
     def savegame_path(self):
+        """Path to the installed save file"""
         return os.path.join(self.server_dir, self.savegame_name)
 
     @property
     def is_installed(self):
+        """Check if all the files are installed"""
         if not os.path.exists(self.server_dir):
             return False
         elif not os.path.exists(self.pak_dir):
@@ -143,6 +150,7 @@ class LocalInstance:
         else:
             return 2
 
+    # TODO: remove obsolete method
     def status_code(self):
         return self.status
 
@@ -150,15 +158,15 @@ class LocalInstance:
         """Remove all the directories and files associated with the instance
         This will not remove any paks or saves
         """
-        shutil.rmtree(self.path, ignore_errors=True)
+        shutil.rmtree(self.dir, ignore_errors=True)
 
     def install(self):
         """Copy the right revision to the instance directory and copy the paks and saves"""
-        if not os.path.exists(self.server_path):
+        if not os.path.exists(self.server_exec):
             # Check if compilation of the revision is needed
             build_path = self.compile()
             # Copy the right revsion
-            shutil.copytree(build_path, os.path.join(self._instance_path, self.revision))
+            shutil.copytree(build_path, os.path.join(self.dir, self.revision))
         if not os.path.exists(self.savegame_path):
             # Copy the right savegame
             shutil.copyfile(self.savegame, self.savegame_path)
@@ -172,11 +180,11 @@ class LocalInstance:
 
         :return: the path to the compiled revision
         """
-        path = os.path.join(RESOURCES_DIR, 'revisions', self.revision)
+        path = os.path.join(RESOURCES_DIR, 'build', self.revision)
         if not os.path.exists(path):
-            with Popen([BUILD_PATH, self.revision], stdout=PIPE, stderr=PIPE) as proc, \
-                    open(os.path.join(RESOURCES_DIR, 'logs', 'build', f'{self.revision}.log'), 'ab') as out_log, \
-                    open(os.path.join(RESOURCES_DIR, 'logs', 'build', f'{self.revision}_errors.log'), 'ab') as err_log:
+            with Popen([BUILD_SCRIPT, self.revision], **POPEN_OPTIONS) as proc, \
+                    open(os.path.join(RESOURCES_DIR, 'logs', 'build', f'{self.revision}.log'), 'a') as out_log, \
+                    open(os.path.join(RESOURCES_DIR, 'logs', 'build', f'{self.revision}_errors.log'), 'a') as err_log:
                 out, err = proc.communicate()
                 out_log.write(out)
                 err_log.write(err)
@@ -184,9 +192,9 @@ class LocalInstance:
         return path
 
     def start(self):
-        """Starts the server"""
+        """Start the server"""
         user = 'greg'
-        cmd = f'"{self.server_path} -server {self.port} -debug {self.debug}' \
+        cmd = f'"{self.server_exec} -server {self.port} -debug {self.debug}' \
               f' -lang {self.lang} -objects {self.pak_name} -load {self.savegame_name}"'
 
         process = Popen(['sudo', '-H', '-u', user, 'bash', '-c', cmd], **POPEN_OPTIONS)
@@ -197,24 +205,16 @@ class LocalInstance:
             raise LocalInstanceError(err)
 
     def stop(self):
-        """Stops the server"""
-        process = Popen([self._script_path, '-i', 'stop', self.name], **POPEN_OPTIONS)
-        out, err = process.communicate()
-        if err is None:
-            return out
-        else:
-            print(err)
-            raise LocalInstanceError(err)
+        """Stop the server"""
+        pass
 
     def restart(self):
-        """Restarts the server"""
+        """Restart the server"""
         self.stop()
         self.start()
 
     def reload(self):
-        """Stop the server and reinstall pak, saves and new revsion, then restart
-        This method has to be used when the pak or save are changed
-        """
+        """Stop the server and reinstall pak, saves and new revsion, then restart"""
         self.stop()
         self.install()
         self.start()
@@ -223,7 +223,3 @@ class LocalInstance:
 class LocalInstanceError(Exception):
     def __init__(self, message):
         self.message = message
-
-
-class LocalInstanceBuildError(LocalInstanceError):
-    pass

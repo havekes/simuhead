@@ -1,0 +1,10 @@
+# New project files
+
+/resources/build/*
+!/resources/build/build.sh
+!/resources/build/config.default
+
+/resources/instances/*
+/resources/logs/*
+/resources/paks/*
+/resources/saves/*
